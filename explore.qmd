@@ -1,0 +1,35 @@
+---
+title: "Map explorer"
+subtitle: "Toggle between anemia, open defecation, malaria, and climate, and zoom into any country"
+toc: false
+---
+
+::: {.howto}
+**How to use it:** In the panel on the right, **pick what the hexagons show** (anemia, open defecation, malaria, rainfall, wealth, the k-means profile, DBSCAN hotspots, or model error). **Zoom to a country** from the drop-down, and drag the slider to see the map underneath. The **layers button** (top left) turns on the Malaria Atlas Project surfaces, typical rainfall, region borders, and a satellite basemap. Hover over a hexagon for its numbers.
+:::
+
+```{python}
+from _maps import explorer_map
+explorer_map(height=700)
+```
+
+::: {.privacy}
+**Why hexagons and not survey points?** The DHS does not allow publishing the GPS locations of survey clusters. Each hexagon is about 23 km on a side and combines at least 3 clusters. Hexagons with fewer clusters are hidden, so the map shows 2,037 hexagons covering about 89% of all clusters. The malaria and rainfall surfaces are open data and are shown at full detail.
+:::
+
+## Open defecation vs. malaria, side by side
+
+The two maps below move together: pan or zoom one, and the other follows. Open defecation (left) is highest in Benin, Burkina Faso, Niger, and Togo, and also in northern Namibia, Ethiopia, and Madagascar. Malaria (right) is highest across West Africa, from Sierra Leone to Burkina Faso and Togo, and much lower in East and Southern Africa. The two overlap most from Burkina Faso to Benin and northern Nigeria, which is exactly where the "all three high" profile sits.
+
+```{python}
+from _maps import dual_map
+dual_map("od_pct", "pfpr", height=480)
+```
+
+## Rainfall anomaly vs. anemia
+
+The same comparison for climate. On the left is how much wetter or drier than normal the three months before the survey were (in standard deviations). On the right is the share of children with anemia.
+
+```{python}
+dual_map("rain_3mo_z", "anemia_pct", height=480)
+```

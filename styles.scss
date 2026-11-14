@@ -1,0 +1,19 @@
+/*-- scss:defaults --*/
+$primary: #7b2d26;
+$font-family-sans-serif: "Inter", "Segoe UI", system-ui, sans-serif;
+
+/*-- scss:rules --*/
+.stat-row { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1.2rem 0 1.6rem; }
+.stat { flex: 1 1 150px; background: #f7f3f0; border-radius: 10px; padding: .9rem 1rem; }
+.stat .num { font-size: 1.9rem; font-weight: 700; color: $primary; line-height: 1.1; }
+.stat .lbl { font-size: .85rem; color: #555; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1rem 0; }
+.card-p { border-radius: 10px; padding: 1rem; background: #fff; border: 1px solid #e5e5e5; border-top: 6px solid var(--c); }
+.card-p h4 { margin: 0 0 .4rem; font-size: 1.05rem; }
+.card-p .meta { font-size: .85rem; color: #666; }
+.card-p .bar { height: 8px; background: #eee; border-radius: 4px; margin: 3px 0 7px; }
+.card-p .bar span { display: block; height: 100%; border-radius: 4px; }
+.finding { border-left: 4px solid $primary; padding: .4rem 1rem; margin: .8rem 0; background: #fbf8f6; }
+.howto { font-size: .9rem; color: #555; background: #f3f6f9; padding: .5rem .9rem; border-radius: 8px; margin-bottom: .8rem; }
+.privacy { font-size: .85rem; color: #555; border: 1px dashed #bbb; padding: .5rem .9rem; border-radius: 8px; }
+.vega-embed { width: 100%; }

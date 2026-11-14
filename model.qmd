@@ -1,0 +1,130 @@
+---
+title: "Predicting anemia"
+toc: false
+subtitle: "Research question 3: how well do sanitation, malaria, rainfall, and household conditions predict cluster anemia, and where does the prediction fail?"
+---
+
+```{python}
+import altair as alt
+import pandas as pd
+from IPython.display import HTML
+from _common import csv, hexes, regions, VAR, PROFILE_ORDER, profile_scale
+sc = csv("model_scores.csv")
+fi = csv("feature_importance.csv")
+```
+
+## The setup
+
+The goal is to predict **the share of children with anemia in each cluster**. The predictors are:
+
+- **Open defecation:** share of households in the cluster with no toilet (DHS)
+- **Malaria:** *P. falciparum* prevalence around the cluster in the survey year (Malaria Atlas Project raster)
+- **Rainfall anomaly:** how much wetter or drier than normal the 3 months before the survey were (CHIRPS raster)
+- **Typical annual rainfall** (CHIRPS 1981–2010)
+- **Household wealth** and **mothers' secondary schooling** (DHS)
+- **Urban vs. rural**
+- **Anemia in nearby clusters:** the average of the 10 nearest *training* clusters (a "spatial lag", built so the test set never leaks into it)
+
+I held out 20% of clusters as a **test set**. On the other 80%, I tuned a **random forest** with **grid search and 5-fold cross-validation** and compared it with a **linear regression** baseline.
+
+## How good are the predictions?
+
+```{python}
+long = sc.melt(id_vars="model", value_vars=["cv_r2", "test_r2"], var_name="set", value_name="r2")
+long["set"] = long.set.map({"cv_r2": "Cross-validation (training data)", "test_r2": "Held-out test set"})
+alt.Chart(long).mark_bar().encode(
+    y=alt.Y("model:N", title=None, sort=["Random forest", "Linear regression", "Random forest (no spatial lag)"]),
+    x=alt.X("r2:Q", title="R² (share of variation explained)", scale=alt.Scale(domain=[0, 0.5])),
+    color=alt.Color("set:N", scale=alt.Scale(range=["#c7a49f", "#7b2d26"]), title=None, legend=alt.Legend(orient="bottom")),
+    yOffset="set:N",
+    tooltip=["model", "set", alt.Tooltip("r2:Q", format=".3f")]
+).properties(width=560, height=200)
+```
+
+```{python}
+#| output: asis
+s = sc.set_index("model")
+print(f"""The random forest explains **{s.loc['Random forest','test_r2']*100:.0f}%** of the variation in anemia between clusters on unseen data, against **{s.loc['Linear regression','test_r2']*100:.0f}%** for linear regression. Its average miss is **{s.loc['Random forest','test_mae']:.0f} percentage points**. Without the "nearby clusters" feature, the forest drops to {s.loc['Random forest (no spatial lag)','test_r2']*100:.0f}%, so where a cluster sits tells you a lot. These are modest numbers: much of what drives anemia (diet, iron, worms, genetics such as sickle cell) is not in the model, and clusters with only 5–10 tested children are noisy.""")
+```
+
+## Which factors matter?
+
+::: {.howto}
+**Pick a view:** *Random forest* shows how much the forest's accuracy drops when each factor is scrambled (permutation importance). *Linear regression* shows the change in anemia (in percentage points) for a one-standard-deviation increase in each factor.
+:::
+
+```{python}
+fl = fi.melt(id_vars=["label", "rf_importance_sd"], value_vars=["rf_importance", "linear_std_coef"],
+             var_name="view", value_name="value")
+fl["view"] = fl.view.map({"rf_importance": "Random forest", "linear_std_coef": "Linear regression"})
+fl.loc[fl.view == "Linear regression", "rf_importance_sd"] = 0
+view = alt.param(name="view", value="Random forest",
+                 bind=alt.binding_radio(options=["Random forest", "Linear regression"], name="View: "))
+b = alt.Chart(fl).transform_filter("datum.view == view").encode(
+    y=alt.Y("label:N", sort="-x", title=None))
+bars = b.mark_bar().encode(
+    x=alt.X("value:Q", title="Importance / effect"),
+    color=alt.condition("datum.value > 0", alt.value("#7b2d26"), alt.value("#3b6ea5")),
+    tooltip=["label", alt.Tooltip("value:Q", format=".3f")])
+err = b.mark_errorbar().encode(x="lo:Q", x2="hi:Q").transform_calculate(
+    lo="datum.value - datum.rf_importance_sd", hi="datum.value + datum.rf_importance_sd")
+(bars + err).add_params(view).properties(width=560, height=260)
+```
+
+Malaria and nearby clusters' anemia dominate. In the linear model, more open defecation means slightly more anemia (+0.7 points per standard deviation), but its effect is small next to malaria (+3.4). Wealth and mothers' schooling go the other way, as expected.
+
+## Where does the model miss?
+
+The map shows the **average error** in each region: actual minus predicted anemia, using out-of-fold predictions so every cluster was predicted by a model that never saw it. **Red** means the model *under*-predicts (more anemia than expected), and **blue** means it over-predicts.
+
+::: {.howto}
+**Click a country bar** to highlight it on the map. Shift-click for several, double-click to reset. **Brush the scatterplot** (bottom) to see which countries the badly predicted hexagons belong to.
+:::
+
+```{python}
+rg = regions(0.03)
+rg = rg[rg.n_clusters.notna()].copy()
+pick = alt.selection_point(fields=["country"])
+emap = alt.Chart(rg).mark_geoshape(stroke="white", strokeWidth=0.3).encode(
+    color=alt.Color("resid:Q", scale=alt.Scale(scheme="redblue", domain=[-15, 15], reverse=True, clamp=True),
+                    title="Actual − predicted (pp)"),
+    opacity=alt.condition(pick, alt.value(1), alt.value(0.15)),
+    tooltip=[alt.Tooltip("region:N", title="Region"), "country:N",
+             alt.Tooltip("anemia_pct:Q", title="Actual anemia %", format=".0f"),
+             alt.Tooltip("pred_anemia_pct:Q", title="Predicted %", format=".0f"),
+             alt.Tooltip("abs_err:Q", title="Average miss (pp)", format=".1f")]
+).add_params(pick).project("equalEarth").properties(width=500, height=500)
+byc = (pd.DataFrame(rg.drop(columns="geometry"))
+       .assign(w=lambda d: d.abs_err * d.n_clusters)
+       .groupby("country").agg(w=("w", "sum"), n=("n_clusters", "sum")).reset_index())
+byc["abs_err"] = byc.w / byc.n
+cb = alt.Chart(byc).mark_bar().encode(
+    y=alt.Y("country:N", sort="-x", title=None), x=alt.X("abs_err:Q", title="Average miss (pp)"),
+    color=alt.condition(pick, alt.value("#e6550d"), alt.value("#ddd")),
+    tooltip=["country", alt.Tooltip("abs_err:Q", format=".1f")]
+).add_params(pick).properties(width=230, height=500)
+(emap | cb).configure_view(stroke=None)
+```
+
+```{python}
+hx = pd.DataFrame(hexes().drop(columns="geometry")).dropna(subset=["pred_anemia_pct"])
+brush = alt.selection_interval()
+sc_ = alt.Chart(hx).mark_circle(size=28, opacity=0.6).encode(
+    x=alt.X("pred_anemia_pct:Q", title="Predicted anemia (%)", scale=alt.Scale(domain=[0, 100])),
+    y=alt.Y("anemia_pct:Q", title="Actual anemia (%)", scale=alt.Scale(domain=[0, 100])),
+    color=alt.condition(brush, alt.Color("profile_name:N", scale=profile_scale(), title="Profile"), alt.value("#ddd")),
+    tooltip=["country", alt.Tooltip("anemia_pct:Q", format=".0f"), alt.Tooltip("pred_anemia_pct:Q", format=".0f")]
+).add_params(brush).properties(width=380, height=380, title="Each dot is a hexagon")
+line = alt.Chart(pd.DataFrame({"x": [0, 100], "y": [0, 100]})).mark_line(color="#888", strokeDash=[4, 4]).encode(x="x", y="y")
+cnt = alt.Chart(hx).mark_bar(color="#7b2d26").encode(
+    y=alt.Y("country:N", sort="-x", title=None), x=alt.X("count():Q", title="Hexagons in selection")
+).transform_filter(brush).properties(width=220, height=380)
+((sc_ + line) | cnt).configure_view(stroke=None)
+```
+
+```{python}
+#| output: asis
+worst = byc.sort_values("abs_err", ascending=False).head(3).country.tolist()
+best = byc.sort_values("abs_err").head(3).country.tolist()
+print(f"""The model misses most in **{', '.join(worst)}**, and does best in **{', '.join(best)}**. Predictions bunch toward the middle (the dots form a flatter cloud than the dashed 1:1 line), which is typical of random forests: very high and very low anemia clusters get pulled toward the average. Errors are also clustered in space, which points to regional factors the model does not see, such as diet, deworming programmes, or other infections.""")
+```

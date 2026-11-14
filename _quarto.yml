@@ -1,0 +1,46 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - index.qmd
+    - explore.qmd
+    - overlap.qmd
+    - profiles.qmd
+    - model.qmd
+    - methods.qmd
+    - report.qmd
+
+execute:
+  echo: false
+  warning: false
+  freeze: auto
+
+website:
+  title: "Malaria · Sanitation · Anemia"
+  page-navigation: true
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: explore.qmd
+        text: Map explorer
+      - href: overlap.qmd
+        text: Where they overlap
+      - href: profiles.qmd
+        text: Profiles & hotspots
+      - href: model.qmd
+        text: Predicting anemia
+      - href: methods.qmd
+        text: Data & methods
+      - href: report.qmd
+        text: Report
+  page-footer:
+    center: "Mohamad AlAbbas · MUSA 5500 Geospatial Data Science in Python · University of Pennsylvania, Fall 2026"
+
+format:
+  html:
+    theme: [flatly, styles.scss]
+    toc: true
+    toc-location: right
+    page-layout: full
+    code-fold: true

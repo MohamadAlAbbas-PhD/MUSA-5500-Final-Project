@@ -1,0 +1,146 @@
+---
+title: "Data & methods"
+subtitle: "How the data were collected, combined, analysed, and published"
+---
+
+```{python}
+import pandas as pd
+from pathlib import Path
+from IPython.display import HTML
+from _common import summary
+
+def show_code(path, title):
+    code = Path(path).read_text(encoding="utf-8")
+    print(f"::: {{.callout-note collapse=true}}\n## Show the code: `{path}` ({title})\n\n```python\n{code}\n```\n:::\n")
+```
+
+## The pipeline at a glance
+
+```{mermaid}
+flowchart LR
+  A["DHS surveys<br/>children & households<br/>(IPUMS-DHS)"] --> C["1 · Cluster table<br/>anemia %, open defecation %,<br/>wealth, education"]
+  B["DHS GPS<br/>cluster locations"] --> C
+  C --> D["2 · Buffers<br/>2 km urban / 5 km rural"]
+  E["Malaria Atlas Project<br/>PfPR raster, 2000–2021<br/>(web API)"] --> F["Zonal statistics<br/>rasterio + rasterstats"]
+  G["CHIRPS monthly rainfall<br/>1981–2021<br/>(xarray)"] --> F
+  D --> F
+  H["geoBoundaries<br/>admin-1 regions<br/>(web API)"] --> K
+  F --> I["4 · k-means profiles<br/>+ DBSCAN hotspots"]
+  F --> J["5 · Random forest vs<br/>linear regression"]
+  I --> K["6 · Aggregate to hexagons<br/>& regions (privacy)"]
+  J --> K
+  K --> L["Quarto website<br/>folium + Altair"]
+```
+
+## Data sources
+
+| Source | What it gives | How it was collected | Years |
+|---|---|---|---|
+| **DHS surveys** via IPUMS-DHS | Children's hemoglobin (anemia), household toilet type, wealth quintile, mother's education, interview date | Registered download (restricted, *not* in this repo) | 2000–2021 |
+| **DHS GPS files** | Displaced cluster coordinates (up to 2 km urban, 5 km rural, rarely 10 km) | Registered download (restricted) | 2000–2021 |
+| **Malaria Atlas Project** | *P. falciparum* parasite rate in children 2–10, 5 km raster, one per year | **Web Coverage Service API** (`GetCoverage`, clipped to Africa) | 2000–2021 |
+| **CHIRPS v2** | Monthly rainfall, 0.05° (~5 km) raster | Monthly netCDF files | 1981–2021 |
+| **geoBoundaries** | Admin-1 (province/state) boundaries | **geoBoundaries REST API**, one call per country | current |
+
+```{python}
+s = summary()
+flow = pd.DataFrame(s["sample_flow"])
+flow["remaining"] = flow.remaining.map("{:,}".format)
+HTML("<b>Sample: from 3 million child records to the analysis sample</b>" +
+     flow.rename(columns={"step": "Step", "remaining": "Children remaining"}).to_html(index=False, classes="table table-sm"))
+```
+
+The final sample has **`{python} f"{s['children']:,}"` children** in **`{python} f"{s['clusters']:,}"` clusters** across **`{python} s['countries']` countries** and **`{python} s['surveys']` surveys**. Clusters with fewer than 5 tested children were dropped because their anemia rate is too noisy.
+
+## Step 1 · From children to clusters
+
+A DHS **cluster** is a village or urban neighbourhood where about 25–30 households were interviewed. For each cluster I calculate:
+
+- **Anemia (%)**: the share of tested children aged 6–59 months with hemoglobin below 11 g/dL (adjusted for altitude by DHS)
+- **Open defecation (%)**: the share of households with no toilet facility
+- **Wealth**: the average household wealth quintile (1 = poorest fifth of the country, 5 = richest)
+- **Mothers with secondary school (%)**, **urban/rural**, and the **interview month**
+
+```{python}
+#| output: asis
+show_code("analysis/01_build_clusters.py", "pandas")
+```
+
+## Step 2 · Raster analysis: malaria and rainfall around each cluster
+
+DHS moves every cluster's GPS point by up to 2 km (urban) or 5 km (rural) to protect privacy. So instead of reading the raster at the point, I draw a **buffer** of that size around each point (in an equal-area projection, so the distances are in true metres) and take the **mean raster value inside the buffer** with `rasterstats.zonal_stats`.
+
+- **Malaria:** the Malaria Atlas Project raster *for the year of the interview*, read with `rasterio`.
+- **Rainfall anomaly:** with `xarray`, I sum CHIRPS rainfall over the **3 months before the interview month**. I compare that total to the same 3 calendar months in every year from 1981 to 2010 at the same pixel: *z = (this year − 30-year average) / 30-year standard deviation*. Negative means drier than normal, positive means wetter.
+- **Typical annual rainfall:** the 1981–2010 average.
+
+As a check, the rainfall anomalies correlate at **0.78** with the ones computed independently in R from the daily CHIRPS v3 data in my other project. The two use different CHIRPS versions and different window definitions, so they should not match exactly.
+
+```{python}
+#| output: asis
+show_code("analysis/02_raster_features.py", "geopandas, rasterio, rasterstats, xarray")
+show_code("analysis/03_download_boundaries.py", "geoBoundaries API")
+```
+
+## Step 3 · Clustering: k-means profiles and DBSCAN hotspots
+
+- **k-means** (`scikit-learn`) on the three *standardized* measures. Choosing k: the elbow plot and the silhouette score both point to **k = 5**.
+- **DBSCAN** on the latitude/longitude of the "all three high" clusters, with **haversine** (great-circle) distance. Settings: radius 50 km, at least 15 clusters. A sensitivity check covers radii of 25–100 km.
+
+```{python}
+#| output: asis
+show_code("analysis/04_profiles_hotspots.py", "scikit-learn KMeans, DBSCAN")
+```
+
+## Step 4 · Machine learning: predicting anemia
+
+- **Train/test split** of 80/20, **5-fold cross-validation**, and a **grid search** over random forest depth, leaf size, and features per split.
+- A **linear regression** pipeline (`StandardScaler` → `LinearRegression`) as the baseline.
+- **Spatial lag:** the average anemia of the 10 nearest *training* clusters, found with a `BallTree` and haversine distance. Test clusters only "see" training neighbours, so no answers leak in.
+- **Permutation importance** shows which features matter. **Out-of-fold predictions** give every cluster a prediction from a model that never saw it, which feeds the error map.
+
+```{python}
+#| output: asis
+show_code("analysis/05_predict_anemia.py", "scikit-learn")
+```
+
+## Step 5 · Privacy-safe aggregation and the website
+
+::: {.privacy}
+**DHS rules do not allow publishing cluster GPS points or microdata.** The raw DHS data and every cluster-level file stay on my computer. They are excluded by `.gitignore` and never pushed to GitHub. Everything on this site is aggregated:
+
+- **Hexagons** (H3 resolution 4, ~23 km edge, ~1,770 km²), shown only if they hold **at least 3 clusters**. The real H3 cell ids are dropped.
+- **Admin-1 regions**, shown only with **at least 5 clusters**.
+- **Malaria and rainfall rasters** are open data and are shown in full.
+:::
+
+```{python}
+#| output: asis
+show_code("analysis/06_public_outputs.py", "h3, geopandas")
+```
+
+**Visualization tools:** `folium` for the Leaflet maps (layer control, a custom measure picker, synced dual maps, raster image overlays) and `Altair` for the linked charts (brushing, click-to-filter, legend selection, sliders, drop-downs). The site is built with Quarto and hosted on GitHub Pages.
+
+## Reproducing this
+
+```bash
+python -m venv .venv && .venv/Scripts/activate
+pip install -r requirements.txt
+cd analysis
+python 01_build_clusters.py      # needs your own DHS extract (see README)
+python 02_raster_features.py     # needs MAP + CHIRPS rasters
+python 03_download_boundaries.py
+python 04_profiles_hotspots.py
+python 05_predict_anemia.py
+python 06_public_outputs.py
+cd .. && quarto render
+```
+
+## Limitations
+
+- **Cross-sectional data:** this is about association and prediction, not cause and effect.
+- **Surveys from different years are pooled** (2000–2021). A hexagon can mix surveys taken 15 years apart.
+- **Malaria is modelled, not measured** in the cluster. MAP surfaces are themselves smoothed predictions.
+- **Small samples:** many clusters have 5–15 tested children, so cluster anemia rates are noisy. This limits how well any model can do.
+- **GPS displacement** blurs the raster extraction, which the buffers only partly fix.
+- **Country coverage:** only surveys that tested children's hemoglobin *and* released GPS are included. In this extract, DR Congo and Côte d'Ivoire have no GPS, Zambia and Chad have no anemia classification, and Kenya has too few tested children with complete data. All five drop out.

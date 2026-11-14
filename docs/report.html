@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Mohamad AlAbbas">
+<meta name="dcterms.date" content="2026-12-08">
+
+<title>Where Malaria, Open Defecation, and Child Anemia Coincide – Malaria · Sanitation · Anemia</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-9f3bd175c10802df2928bec4c6c0e599.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Malaria · Sanitation · Anemia</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./explore.html"> 
+<span class="menu-text">Map explorer</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./overlap.html"> 
+<span class="menu-text">Where they overlap</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./profiles.html"> 
+<span class="menu-text">Profiles &amp; hotspots</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./model.html"> 
+<span class="menu-text">Predicting anemia</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./methods.html"> 
+<span class="menu-text">Data &amp; methods</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./report.html" aria-current="page"> 
+<span class="menu-text">Report</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology">Methodology</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="report.pdf"><i class="bi bi-file-pdf"></i>Typst</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content column-page-left" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Where Malaria, Open Defecation, and Child Anemia Coincide</h1>
+<p class="subtitle lead">A geospatial typology of DHS clusters in sub-Saharan Africa: final project report</p>
+</div>
+
+
+
+<div class="quarto-title-meta column-page-left">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Mohamad AlAbbas </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">December 8, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>More than half of children under five in sub-Saharan Africa are anemic, and anemia in early childhood slows growth and cognitive development. Two of its well-documented environmental drivers are <strong>malaria</strong>, which destroys red blood cells, and <strong>poor sanitation</strong>: open defecation spreads hookworm and other enteric infections that cause blood loss and gut inflammation. Health programmes for these two problems are usually run separately, by malaria control and by water, sanitation and hygiene (WASH) programmes. Knowing <em>where</em> they pile up in the same communities can help target joint interventions.</p>
+<p>This project asks three questions:</p>
+<ol type="1">
+<li>Where do high child anemia, high community open defecation, and high malaria endemicity <strong>coincide</strong>, and how are these places distributed within and across countries?</li>
+<li>Do communities fall into a small number of distinct <strong>profiles</strong> based on these three measures, and are communities with the same profile <strong>concentrated in space</strong>?</li>
+<li>How well do open defecation, malaria, recent rainfall anomalies, wealth, and maternal education <strong>predict</strong> community anemia, and <strong>where</strong> does the prediction perform worst?</li>
+</ol>
+</section>
+<section id="methodology" class="level2">
+<h2 class="anchored" data-anchor-id="methodology">Methodology</h2>
+<p><strong>Data.</strong> I combined five sources: (1) Demographic and Health Surveys (DHS) child and household records from IPUMS-DHS; (2) DHS GPS cluster coordinates; (3) Malaria Atlas Project (MAP) annual rasters of <em>P. falciparum</em> prevalence in children aged 2–10 (5 km, 2000–2021), downloaded through MAP’s Web Coverage Service API; (4) CHIRPS monthly rainfall rasters (0.05°, 1981–2021); and (5) admin-1 boundaries from the geoBoundaries API. The analysis sample is <strong>236,822 children aged 6–59 months in 22,097 DHS clusters</strong>, from <strong>68 surveys in 28 countries</strong> (2000–2021). I kept surveys that tested hemoglobin and released GPS, and clusters with at least five tested children.</p>
+<p><strong>Cluster measures.</strong> For each cluster I computed the share of children who are anemic (hemoglobin &lt; 11 g/dL, altitude-adjusted), the share of households with no toilet facility, the mean household wealth quintile, the share of mothers with secondary schooling, and urban/rural status.</p>
+<p><strong>Raster analysis.</strong> Because DHS displaces cluster coordinates by up to 2 km (urban) or 5 km (rural), I buffered each cluster by that distance in an equal-area projection and used zonal statistics (<code>rasterio</code>, <code>rasterstats</code>) to take the mean MAP prevalence for the interview year. With <code>xarray</code>, I computed the rainfall total for the three months before each interview. I standardized it against the same calendar months in 1981–2010 at each pixel to give a rainfall anomaly (z-score), and also extracted the 1981–2010 mean annual rainfall.</p>
+<p><strong>Clustering.</strong> I standardized anemia, open defecation, and malaria and applied <strong>k-means</strong> (<code>scikit-learn</code>) for k = 1–10. The elbow in within-cluster inertia and the peak silhouette score both supported <strong>five profiles</strong>. I then ran <strong>DBSCAN</strong> with haversine distance (50 km radius, minimum 15 clusters) on the locations of clusters in the highest-burden profile to find spatial hotspots, and tested radii from 25 to 100 km.</p>
+<p><strong>Prediction.</strong> I predicted cluster anemia with a <strong>random forest</strong> and compared it with a <strong>linear regression</strong> baseline, using an 80/20 train/test split, 5-fold cross-validation, and grid search. Predictors were open defecation, malaria, the rainfall anomaly, typical rainfall, wealth, maternal education, urban status, and a <strong>spatial lag</strong>: mean anemia among the 10 nearest <em>training</em> clusters, so the test set never leaks into the features. Permutation importance ranked the predictors, and out-of-fold predictions were mapped by region to show where the model fails.</p>
+<p><strong>Privacy and publication.</strong> DHS terms forbid redistributing microdata or GPS coordinates. All cluster-level data therefore stay offline. The website shows only aggregates: ~23 km H3 hexagons containing at least 3 clusters, and admin-1 regions with at least 5 clusters. The open MAP and CHIRPS rasters are shown in full. The site uses <code>folium</code> for interactive maps and <code>Altair</code> for linked charts.</p>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<p><strong>Overlap (Q1).</strong> Anemia is high almost everywhere: <strong>64%</strong> of children in the average cluster. Across hexagons, anemia is strongly correlated with malaria (r = 0.63) but only weakly with open defecation (r = 0.13). Open defecation and malaria are barely related to each other (r = 0.11), so places with both are a distinct subgroup rather than the norm. Of the 325 regions with enough data, those with all three measures above the median are concentrated in <strong>West Africa</strong>: Burkina Faso (13 regions), Liberia (11), Benin and Nigeria (9 each), Ghana (7), and Togo (5). Outside West Africa, only Mozambique has a notable group (5).</p>
+<p><strong>Profiles and hotspots (Q2).</strong> The five k-means profiles are:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Profile</th>
+<th style="text-align: right;">Share of clusters</th>
+<th style="text-align: right;">Anemia</th>
+<th style="text-align: right;">No toilet</th>
+<th style="text-align: right;">Malaria</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>All three high</td>
+<td style="text-align: right;">10%</td>
+<td style="text-align: right;">85%</td>
+<td style="text-align: right;">83%</td>
+<td style="text-align: right;">54%</td>
+</tr>
+<tr class="even">
+<td>High anemia + malaria</td>
+<td style="text-align: right;">21%</td>
+<td style="text-align: right;">77%</td>
+<td style="text-align: right;">11%</td>
+<td style="text-align: right;">46%</td>
+</tr>
+<tr class="odd">
+<td>High open defecation</td>
+<td style="text-align: right;">15%</td>
+<td style="text-align: right;">61%</td>
+<td style="text-align: right;">80%</td>
+<td style="text-align: right;">12%</td>
+</tr>
+<tr class="even">
+<td>High anemia (only)</td>
+<td style="text-align: right;">29%</td>
+<td style="text-align: right;">74%</td>
+<td style="text-align: right;">8%</td>
+<td style="text-align: right;">11%</td>
+</tr>
+<tr class="odd">
+<td>All three low</td>
+<td style="text-align: right;">26%</td>
+<td style="text-align: right;">34%</td>
+<td style="text-align: right;">7%</td>
+<td style="text-align: right;">10%</td>
+</tr>
+</tbody>
+</table>
+<p>The “all three high” profile is the poorest (mean wealth quintile 2.1) and most rural (90%), with the lowest maternal schooling (6% secondary). DBSCAN finds <strong>7 hotspots</strong> containing <strong>69%</strong> of these clusters. The largest (<strong>1,177 clusters</strong>) is a continuous belt across <strong>Benin, Burkina Faso, Ghana, Mali, Nigeria, and Togo</strong>, and a second spans the <strong>Guinea–Liberia–Sierra Leone</strong> border. The finding holds across radii: at 25 km the belt splits into 11 smaller hotspots, and at 75–100 km it merges into 5–6 that hold 85–88% of the profile. The “high anemia only” profile is a reminder that anemia is common even where toilets are common and malaria is low, which points to diet and other causes.</p>
+<p><strong>Prediction (Q3).</strong> The random forest explains <strong>35%</strong> of the variance in cluster anemia on the held-out test set (cross-validated R² = 0.34; mean absolute error 15.6 percentage points). Linear regression explains <strong>32%</strong>. Without the spatial lag, the forest falls to 31%. Anemia in nearby clusters and malaria prevalence are by far the most important predictors. Typical rainfall, maternal education, and wealth add a little, and open defecation and the recent rainfall anomaly add very little once malaria and location are known. In the linear model, a one-standard-deviation increase in malaria is associated with 3.4 percentage points more anemia, compared with 0.7 points for open defecation. Errors are spatially clustered. The model misses most in <strong>South Africa, Lesotho, and Uganda</strong> (average miss 18–20 points), where anemia is lower and more variable. It does best in <strong>Burkina Faso</strong> (under 10 points), where anemia is uniformly high. Like most random forests, it pulls extreme clusters toward the mean.</p>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>Malaria, open defecation, and child anemia overlap in a clearly defined belt of poor, rural communities in West Africa, from Burkina Faso and Mali through Ghana, Togo, and Benin to northern Nigeria. About one in ten DHS clusters belongs to this “all three high” profile, and most of them sit in a handful of contiguous hotspots rather than being scattered. These are natural candidates for combined malaria and sanitation programmes. Malaria and place are much better predictors of community anemia than open defecation. This does not mean sanitation is unimportant: its effect may run through infections the model cannot see, and the cross-sectional design cannot separate causes. Still, the modest predictive accuracy and the regionally clustered errors show that much of the variation in anemia comes from factors outside this dataset, such as diet, deworming coverage, and genetic blood disorders.</p>
+<p><strong>Limitations.</strong> The data are cross-sectional and pool surveys from 2000–2021. Malaria comes from modelled surfaces rather than measurements. Cluster anemia rates rest on small samples. GPS displacement blurs the raster extraction. Five sub-Saharan countries drop out for lack of GPS or hemoglobin data. Future work could add deworming and diet indicators, model each survey round separately to track change over time, and use spatial cross-validation (holding out whole regions) for a stricter test of the model.</p>
+<p><em>Interactive maps and charts, code, and full methods: see the other pages of this site. Code: the project GitHub repository.</em></p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Mohamad AlAbbas · MUSA 5500 Geospatial Data Science in Python · University of Pennsylvania, Fall 2026</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

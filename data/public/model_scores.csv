@@ -1,0 +1,4 @@
+model,cv_r2,test_r2,test_mae
+Linear regression,0.309,0.32,16.004
+Random forest,0.34,0.348,15.65
+Random forest (no spatial lag),0.29,0.309,16.161

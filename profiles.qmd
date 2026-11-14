@@ -1,0 +1,127 @@
+---
+title: "Profiles & hotspots"
+toc: false
+subtitle: "Research question 2: do clusters fall into a few distinct profiles, and are they concentrated in space?"
+---
+
+```{python}
+import altair as alt
+import pandas as pd
+from IPython.display import HTML
+from _common import csv, hexes, regions, PROFILE_COLORS, PROFILE_ORDER, PROFILE_TEXT, profile_scale
+prof = csv("kmeans_profiles.csv")
+elbow = csv("kmeans_elbow.csv")
+```
+
+## Step 1: how many profiles? (k-means + elbow)
+
+I standardized the three measures (anemia, open defecation, malaria) for all 22,097 clusters and ran **k-means** for 1 to 10 groups. The *elbow* chart shows how much tighter the groups get with each extra profile. The gain flattens after 4–5, and the *silhouette* score (how well separated the groups are) peaks at **5**, so I use five profiles.
+
+```{python}
+base = alt.Chart(elbow).encode(x=alt.X("k:O", title="Number of profiles (k)"))
+inertia = base.mark_line(point=True, color="#7b2d26").encode(
+    y=alt.Y("inertia:Q", title="Within-group spread (inertia)"), tooltip=["k", alt.Tooltip("inertia:Q", format=",.0f")])
+sil = base.mark_line(point=True, color="#3b6ea5", strokeDash=[4, 3]).encode(
+    y=alt.Y("silhouette:Q", title="Silhouette score (higher = clearer groups)", scale=alt.Scale(zero=False)),
+    tooltip=["k", alt.Tooltip("silhouette:Q", format=".3f")])
+rule = alt.Chart(pd.DataFrame({"k": [5]})).mark_rule(color="#999", strokeDash=[2, 2]).encode(x="k:O")
+alt.layer(inertia, sil, rule).resolve_scale(y="independent").properties(width=640, height=280)
+```
+
+## Step 2: the five profiles
+
+```{python}
+def bar(v, c, mx=100):
+    return f"<div class='bar'><span style='width:{min(v / mx * 100, 100):.0f}%;background:{c}'></span></div>"
+cards = ""
+for _, r in prof.sort_values("profile").iterrows():
+    c = PROFILE_COLORS[r.profile_name]
+    cards += f"""<div class='card-p' style='--c:{c}'><h4>{r.profile_name}</h4>
+    <div class='meta'>{r.n_clusters:,} clusters ({r.share_pct:.0f}%) · {r.n_children:,} children</div>
+    <p style='font-size:.9rem;margin:.5rem 0'>{PROFILE_TEXT[r.profile_name]}</p>
+    Anemia <b>{r.anemia_pct:.0f}%</b>{bar(r.anemia_pct, '#de2d26')}
+    No toilet <b>{r.od_pct:.0f}%</b>{bar(r.od_pct, '#d95f0e')}
+    Malaria <b>{r.pfpr:.0f}%</b>{bar(r.pfpr, '#756bb1')}
+    <div class='meta'>Wealth quintile {r.wealth:.1f} · mothers w/ secondary school {r.mom_secondary_pct:.0f}% · urban {r.urban_pct:.0f}%</div></div>"""
+HTML(f"<div class='cards'>{cards}</div>")
+```
+
+## Step 3: where each profile is
+
+::: {.howto}
+**Click a profile in the legend** to show only the regions where it is the most common profile. The bar chart on the right filters too. Shift-click to compare two profiles.
+:::
+
+```{python}
+rg = regions(0.03)
+rg = rg[rg.n_clusters.notna()].copy()
+pick = alt.selection_point(fields=["profile_name"], bind="legend")
+m = alt.Chart(rg).mark_geoshape(stroke="white", strokeWidth=0.4).encode(
+    color=alt.Color("profile_name:N", scale=profile_scale(), title="Most common profile",
+                    legend=alt.Legend(orient="top", columns=3, symbolType="square")),
+    opacity=alt.condition(pick, alt.value(1), alt.value(0.12)),
+    tooltip=[alt.Tooltip("region:N", title="Region"), "country:N", alt.Tooltip("profile_name:N", title="Profile"),
+             alt.Tooltip("profile1_pct:Q", title="% All three high", format=".0f"),
+             alt.Tooltip("n_clusters:Q", title="DHS clusters")]
+).add_params(pick).project("equalEarth").properties(width=520, height=520)
+
+bc = csv("profiles_by_country.csv")
+long = bc.melt(id_vars=["country", "n_clusters", "anemia_pct"], value_vars=PROFILE_ORDER,
+               var_name="profile_name", value_name="pct")
+long["order"] = long.profile_name.map({p: i for i, p in enumerate(PROFILE_ORDER)})
+bars = alt.Chart(long).mark_bar().encode(
+    y=alt.Y("country:N", sort=alt.EncodingSortField("anemia_pct", order="descending"), title=None),
+    x=alt.X("pct:Q", stack="normalize", title="Share of the country's clusters", axis=alt.Axis(format="%")),
+    color=alt.Color("profile_name:N", scale=profile_scale(), legend=None),
+    order=alt.Order("order:Q"),
+    opacity=alt.condition(pick, alt.value(1), alt.value(0.15)),
+    tooltip=["country:N", alt.Tooltip("profile_name:N", title="Profile"), alt.Tooltip("pct:Q", format=".0f", title="%")]
+).add_params(pick).properties(width=280, height=520, title="Countries, sorted by anemia")
+(m | bars).configure_view(stroke=None)
+```
+
+## Step 4: hotspots of the "all three high" profile (DBSCAN)
+
+Next I ran **DBSCAN** on the locations of the 2,285 "all three high" clusters. DBSCAN groups points that have many neighbours within a set distance and leaves isolated points out. With a **50 km** radius and at least 15 clusters per group, it finds **7 hotspots** that contain 69% of these clusters.
+
+::: {.howto}
+**Move the slider** to change the DBSCAN search radius and watch hotspots merge or break apart. Hexagons are coloured by the share of their clusters that sit inside a hotspot.
+:::
+
+```{python}
+hx = hexes()
+hx = hx[hx.profile1_pct > 0].copy()
+long = hx.melt(id_vars=["hex", "country", "n_clusters", "profile1_pct", "geometry"],
+               value_vars=["hot_25", "hot_50", "hot_75", "hot_100"], var_name="eps", value_name="hot_pct")
+long["eps_km"] = long.eps.str.replace("hot_", "").astype(int)
+import geopandas as gpd
+long = gpd.GeoDataFrame(long, geometry="geometry", crs=4326)
+slider = alt.param(name="radius", value=50, bind=alt.binding_range(min=25, max=100, step=25, name="Search radius (km): "))
+bg = alt.Chart(regions(0.05)).mark_geoshape(fill="#f3f3f3", stroke="#c9c9c9", strokeWidth=0.4)
+hot = alt.Chart(long).mark_geoshape(stroke=None).encode(
+    color=alt.Color("hot_pct:Q", scale=alt.Scale(scheme="reds", domain=[0, 100]),
+                    title="% of hexagon's clusters in a hotspot"),
+    tooltip=["country:N", alt.Tooltip("hot_pct:Q", format=".0f", title="% in hotspot"),
+             alt.Tooltip("profile1_pct:Q", format=".0f", title="% 'all three high'"), "n_clusters:Q"]
+).transform_filter("datum.eps_km == radius").add_params(slider)
+(bg + hot).project("equalEarth").properties(width=760, height=520).configure_view(stroke=None)
+```
+
+```{python}
+sens = csv("dbscan_sensitivity.csv")
+alt.Chart(sens).mark_bar(color="#b2182b").encode(
+    x=alt.X("eps_km:O", title="Search radius (km)"), y=alt.Y("share_pct:Q", title="% of 'all three high' clusters in a hotspot"),
+    tooltip=["eps_km", "n_hotspots", "clusters_in_hotspots", "share_pct"]
+).properties(width=300, height=200, title="Larger radius → fewer, bigger hotspots") | \
+alt.Chart(sens).mark_line(point=True, color="#555").encode(
+    x=alt.X("eps_km:O", title="Search radius (km)"), y=alt.Y("n_hotspots:Q", title="Number of hotspots")
+).properties(width=300, height=200)
+```
+
+```{python}
+hs = csv("dbscan_summary.csv").rename(columns={"hotspot": "Hotspot", "n_clusters": "Clusters", "countries": "Countries",
+     "anemia_pct": "Anemia %", "od_pct": "No toilet %", "pfpr": "Malaria %"})
+HTML(hs.to_html(index=False, classes="table table-sm table-striped"))
+```
+
+**Takeaway:** the "all three high" clusters are not scattered at random. Most fall into one large belt across **Benin, Burkina Faso, Ghana, Mali, Nigeria, and Togo**, with a second hotspot on the **Guinea–Liberia–Sierra Leone** border. Ethiopia and Madagascar have plenty of open defecation, but their malaria is too low for them to show up here.

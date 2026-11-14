@@ -1,0 +1,9 @@
+feature,label,rf_importance,rf_importance_sd,linear_std_coef
+spatial_lag,Anemia in nearby clusters,0.2334,0.0068,10.208
+pfpr,Malaria prevalence (%),0.109,0.0042,3.3943
+rain_annual_mm,Typical annual rainfall,0.0291,0.0028,-0.359
+mom_secondary_pct,Mothers with secondary school (%),0.0204,0.0026,-1.3846
+wealth,Household wealth,0.0134,0.0021,-2.0426
+od_pct,Open defecation (%),0.0115,0.0023,0.7049
+rain_3mo_z,"Rainfall anomaly, last 3 months",0.0085,0.0018,-0.0318
+urban,Urban,0.0023,0.0004,0.6754

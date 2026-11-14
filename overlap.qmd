@@ -1,0 +1,116 @@
+---
+title: "Where they overlap"
+toc: false
+subtitle: "Research question 1: where do high anemia, open defecation, and malaria coincide?"
+---
+
+```{python}
+import altair as alt
+import pandas as pd
+from _common import hexes, regions, VAR, PROFILE_COLORS
+hx = pd.DataFrame(hexes().drop(columns="geometry"))
+rg = regions(0.03)
+rg = rg[rg.n_clusters.notna()].copy()
+med = {c: rg[c].median() for c in ["anemia_pct", "od_pct", "pfpr"]}
+rg["n_high"] = sum((rg[c] > med[c]).astype(int) for c in med)
+rg["high_label"] = rg.n_high.map({0: "None of the three", 1: "One", 2: "Two", 3: "All three"})
+```
+
+## How many of the three are high, region by region?
+
+For every region (admin-1: a province or state) I check whether anemia, open defecation, and malaria are **above the median region** in this sample. Dark red means all three are high at once.
+
+::: {.howto}
+**Click a country bar** on the right to highlight its regions on the map. Shift-click to pick several. Double-click to reset.
+:::
+
+```{python}
+high_scale = alt.Scale(domain=["None of the three", "One", "Two", "All three"],
+                       range=["#e8eef2", "#f6c4a6", "#e2654a", "#8e0f14"])
+pick = alt.selection_point(fields=["country"], on="click")
+mapc = alt.Chart(rg).mark_geoshape(stroke="white", strokeWidth=0.4).encode(
+    color=alt.Color("high_label:N", scale=high_scale, title="Above-median measures",
+                    sort=["None of the three", "One", "Two", "All three"]),
+    opacity=alt.condition(pick, alt.value(1), alt.value(0.15)),
+    tooltip=[alt.Tooltip("region:N", title="Region"), alt.Tooltip("country:N"),
+             alt.Tooltip("anemia_pct:Q", title="Anemia %", format=".0f"),
+             alt.Tooltip("od_pct:Q", title="No toilet %", format=".0f"),
+             alt.Tooltip("pfpr:Q", title="Malaria %", format=".0f"),
+             alt.Tooltip("n_clusters:Q", title="DHS clusters")]
+).project("equalEarth").properties(width=520, height=520)
+
+bars = alt.Chart(pd.DataFrame(rg.drop(columns="geometry"))).mark_bar().encode(
+    y=alt.Y("country:N", sort="-x", title=None),
+    x=alt.X("count():Q", title="Number of regions", stack="normalize", axis=alt.Axis(format="%")),
+    color=alt.Color("high_label:N", scale=high_scale, sort=["None of the three", "One", "Two", "All three"],
+                    legend=None),
+    order=alt.Order("n_high:Q", sort="descending"),
+    opacity=alt.condition(pick, alt.value(1), alt.value(0.3)),
+    tooltip=["country:N", alt.Tooltip("high_label:N", title="High measures"), "count():Q"]
+).add_params(pick).properties(width=260, height=520, title="Share of each country's regions")
+(mapc.add_params(pick) | bars).configure_view(stroke=None)
+```
+
+## The three measures side by side
+
+Each map shows one measure for the same regions. **Hover over a region** in any map and it lights up in all three, so you can compare the same place across measures.
+
+```{python}
+hover = alt.selection_point(fields=["region_id"], on="pointerover", clear="pointerout", empty=False)
+def small(col, title):
+    lab, scheme, dom = VAR[col]
+    return alt.Chart(rg).mark_geoshape().encode(
+        color=alt.Color(f"{col}:Q", scale=alt.Scale(scheme=scheme, domain=dom, clamp=True),
+                        legend=alt.Legend(orient="bottom", title=lab, gradientLength=180)),
+        stroke=alt.condition(hover, alt.value("black"), alt.value("white")),
+        strokeWidth=alt.condition(hover, alt.value(2), alt.value(0.3)),
+        tooltip=[alt.Tooltip("region:N", title="Region"), "country:N",
+                 alt.Tooltip(f"{col}:Q", title=lab, format=".1f")]
+    ).add_params(hover).project("equalEarth").properties(width=300, height=320, title=title)
+alt.hconcat(small("anemia_pct", "Anemia"), small("od_pct", "Open defecation"),
+            small("pfpr", "Malaria")).resolve_scale(color="independent").configure_view(stroke=None)
+```
+
+## Brush the scatterplot to filter everything
+
+Each dot is a hexagon (about 3–10 DHS clusters), placed by how common open defecation is (x-axis) and how many children are anemic (y-axis), and coloured by malaria.
+
+::: {.howto}
+**Drag a box** on the scatterplot. The country bars and the malaria histogram update to show only the hexagons you selected. Use the **country menu** to highlight one country.
+:::
+
+```{python}
+brush = alt.selection_interval(encodings=["x", "y"])
+countries = sorted(hx.country.unique())
+csel = alt.selection_point(fields=["country"], bind=alt.binding_select(options=[None] + countries,
+                           labels=["All countries"] + countries, name="Highlight country: "))
+scatter = alt.Chart(hx).mark_circle(stroke="white", strokeWidth=0.3).encode(
+    x=alt.X("od_pct:Q", title="Households with no toilet (%)"),
+    y=alt.Y("anemia_pct:Q", title="Children anemic (%)", scale=alt.Scale(domain=[0, 100])),
+    color=alt.condition(brush & csel, alt.Color("pfpr:Q", scale=alt.Scale(scheme="purples", domain=[0, 70]),
+                        title="Malaria (%)"), alt.value("#e2e2e2")),
+    size=alt.Size("n_clusters:Q", title="DHS clusters", scale=alt.Scale(range=[15, 220])),
+    opacity=alt.condition(csel, alt.value(0.9), alt.value(0.25)),
+    tooltip=["country:N", alt.Tooltip("anemia_pct:Q", format=".0f", title="Anemia %"),
+             alt.Tooltip("od_pct:Q", format=".0f", title="No toilet %"),
+             alt.Tooltip("pfpr:Q", format=".0f", title="Malaria %"), "n_clusters:Q"]
+).add_params(brush, csel).properties(width=470, height=380)
+
+cbar = alt.Chart(hx).mark_bar(color="#7b2d26").encode(
+    y=alt.Y("country:N", sort="-x", title=None), x=alt.X("count():Q", title="Hexagons selected")
+).transform_filter(brush).properties(width=200, height=380)
+
+hist = alt.Chart(hx).mark_bar().encode(
+    x=alt.X("pfpr:Q", bin=alt.Bin(maxbins=25), title="Malaria prevalence (%)"),
+    y=alt.Y("count():Q", title="Hexagons"),
+    color=alt.value("#756bb1")
+).transform_filter(brush).properties(width=700, height=140, title="Malaria in the selected hexagons")
+
+alt.vconcat(alt.hconcat(scatter, cbar), hist).configure_view(stroke=None)
+```
+
+```{python}
+#| output: asis
+r = hx[["anemia_pct", "od_pct", "pfpr"]].corr().round(2)
+print(f"""Across hexagons, anemia goes with malaria (correlation **{r.loc['anemia_pct','pfpr']}**) more than with open defecation (**{r.loc['anemia_pct','od_pct']}**). Open defecation and malaria are themselves only weakly related (**{r.loc['od_pct','pfpr']}**), so places with both are a distinct group, not the norm. The [profiles page](profiles.qmd) picks up from here.""")
+```

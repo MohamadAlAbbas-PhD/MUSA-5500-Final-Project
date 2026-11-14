@@ -1,0 +1,26 @@
+# ---- DHS data must never be committed (DHS terms forbid redistribution) ----
+data/raw/
+data/private/
+local_only/
+*.dta
+*.rds
+*.sav
+*.DTA
+# cluster-level files (contain DHS GPS-derived info)
+*cluster*.csv
+*cluster*.parquet
+*cluster*.gpkg
+*cluster*.geojson
+# large rasters (downloaded separately)
+*.tif
+*.nc
+*.zip
+
+# ---- Python / Quarto ----
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+/.quarto/
+*_files/libs/
+
+**/*.quarto_ipynb

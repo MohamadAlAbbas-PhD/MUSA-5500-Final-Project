@@ -1,0 +1,69 @@
+---
+title: "Where Malaria, Open Defecation, and Child Anemia Coincide"
+subtitle: "A geospatial typology of DHS clusters in sub-Saharan Africa: final project report"
+author: "Mohamad AlAbbas"
+date: "December 8, 2026"
+format:
+  html:
+    toc: true
+  typst:
+    papersize: us-letter
+    margin:
+      x: 0.9in
+      y: 0.8in
+    fontsize: 10.5pt
+    toc: false
+format-links: [typst]
+execute:
+  echo: false
+---
+
+## Introduction
+
+More than half of children under five in sub-Saharan Africa are anemic, and anemia in early childhood slows growth and cognitive development. Two of its well-documented environmental drivers are **malaria**, which destroys red blood cells, and **poor sanitation**: open defecation spreads hookworm and other enteric infections that cause blood loss and gut inflammation. Health programmes for these two problems are usually run separately, by malaria control and by water, sanitation and hygiene (WASH) programmes. Knowing *where* they pile up in the same communities can help target joint interventions.
+
+This project asks three questions:
+
+1. Where do high child anemia, high community open defecation, and high malaria endemicity **coincide**, and how are these places distributed within and across countries?
+2. Do communities fall into a small number of distinct **profiles** based on these three measures, and are communities with the same profile **concentrated in space**?
+3. How well do open defecation, malaria, recent rainfall anomalies, wealth, and maternal education **predict** community anemia, and **where** does the prediction perform worst?
+
+## Methodology
+
+**Data.** I combined five sources: (1) Demographic and Health Surveys (DHS) child and household records from IPUMS-DHS; (2) DHS GPS cluster coordinates; (3) Malaria Atlas Project (MAP) annual rasters of *P. falciparum* prevalence in children aged 2–10 (5 km, 2000–2021), downloaded through MAP's Web Coverage Service API; (4) CHIRPS monthly rainfall rasters (0.05°, 1981–2021); and (5) admin-1 boundaries from the geoBoundaries API. The analysis sample is **236,822 children aged 6–59 months in 22,097 DHS clusters**, from **68 surveys in 28 countries** (2000–2021). I kept surveys that tested hemoglobin and released GPS, and clusters with at least five tested children.
+
+**Cluster measures.** For each cluster I computed the share of children who are anemic (hemoglobin < 11 g/dL, altitude-adjusted), the share of households with no toilet facility, the mean household wealth quintile, the share of mothers with secondary schooling, and urban/rural status.
+
+**Raster analysis.** Because DHS displaces cluster coordinates by up to 2 km (urban) or 5 km (rural), I buffered each cluster by that distance in an equal-area projection and used zonal statistics (`rasterio`, `rasterstats`) to take the mean MAP prevalence for the interview year. With `xarray`, I computed the rainfall total for the three months before each interview. I standardized it against the same calendar months in 1981–2010 at each pixel to give a rainfall anomaly (z-score), and also extracted the 1981–2010 mean annual rainfall.
+
+**Clustering.** I standardized anemia, open defecation, and malaria and applied **k-means** (`scikit-learn`) for k = 1–10. The elbow in within-cluster inertia and the peak silhouette score both supported **five profiles**. I then ran **DBSCAN** with haversine distance (50 km radius, minimum 15 clusters) on the locations of clusters in the highest-burden profile to find spatial hotspots, and tested radii from 25 to 100 km.
+
+**Prediction.** I predicted cluster anemia with a **random forest** and compared it with a **linear regression** baseline, using an 80/20 train/test split, 5-fold cross-validation, and grid search. Predictors were open defecation, malaria, the rainfall anomaly, typical rainfall, wealth, maternal education, urban status, and a **spatial lag**: mean anemia among the 10 nearest *training* clusters, so the test set never leaks into the features. Permutation importance ranked the predictors, and out-of-fold predictions were mapped by region to show where the model fails.
+
+**Privacy and publication.** DHS terms forbid redistributing microdata or GPS coordinates. All cluster-level data therefore stay offline. The website shows only aggregates: ~23 km H3 hexagons containing at least 3 clusters, and admin-1 regions with at least 5 clusters. The open MAP and CHIRPS rasters are shown in full. The site uses `folium` for interactive maps and `Altair` for linked charts.
+
+## Results
+
+**Overlap (Q1).** Anemia is high almost everywhere: **64%** of children in the average cluster. Across hexagons, anemia is strongly correlated with malaria (r = 0.63) but only weakly with open defecation (r = 0.13). Open defecation and malaria are barely related to each other (r = 0.11), so places with both are a distinct subgroup rather than the norm. Of the 325 regions with enough data, those with all three measures above the median are concentrated in **West Africa**: Burkina Faso (13 regions), Liberia (11), Benin and Nigeria (9 each), Ghana (7), and Togo (5). Outside West Africa, only Mozambique has a notable group (5).
+
+**Profiles and hotspots (Q2).** The five k-means profiles are:
+
+| Profile | Share of clusters | Anemia | No toilet | Malaria |
+|---|---:|---:|---:|---:|
+| All three high | 10% | 85% | 83% | 54% |
+| High anemia + malaria | 21% | 77% | 11% | 46% |
+| High open defecation | 15% | 61% | 80% | 12% |
+| High anemia (only) | 29% | 74% | 8% | 11% |
+| All three low | 26% | 34% | 7% | 10% |
+
+The "all three high" profile is the poorest (mean wealth quintile 2.1) and most rural (90%), with the lowest maternal schooling (6% secondary). DBSCAN finds **7 hotspots** containing **69%** of these clusters. The largest (**1,177 clusters**) is a continuous belt across **Benin, Burkina Faso, Ghana, Mali, Nigeria, and Togo**, and a second spans the **Guinea–Liberia–Sierra Leone** border. The finding holds across radii: at 25 km the belt splits into 11 smaller hotspots, and at 75–100 km it merges into 5–6 that hold 85–88% of the profile. The "high anemia only" profile is a reminder that anemia is common even where toilets are common and malaria is low, which points to diet and other causes.
+
+**Prediction (Q3).** The random forest explains **35%** of the variance in cluster anemia on the held-out test set (cross-validated R² = 0.34; mean absolute error 15.6 percentage points). Linear regression explains **32%**. Without the spatial lag, the forest falls to 31%. Anemia in nearby clusters and malaria prevalence are by far the most important predictors. Typical rainfall, maternal education, and wealth add a little, and open defecation and the recent rainfall anomaly add very little once malaria and location are known. In the linear model, a one-standard-deviation increase in malaria is associated with 3.4 percentage points more anemia, compared with 0.7 points for open defecation. Errors are spatially clustered. The model misses most in **South Africa, Lesotho, and Uganda** (average miss 18–20 points), where anemia is lower and more variable. It does best in **Burkina Faso** (under 10 points), where anemia is uniformly high. Like most random forests, it pulls extreme clusters toward the mean.
+
+## Conclusion
+
+Malaria, open defecation, and child anemia overlap in a clearly defined belt of poor, rural communities in West Africa, from Burkina Faso and Mali through Ghana, Togo, and Benin to northern Nigeria. About one in ten DHS clusters belongs to this "all three high" profile, and most of them sit in a handful of contiguous hotspots rather than being scattered. These are natural candidates for combined malaria and sanitation programmes. Malaria and place are much better predictors of community anemia than open defecation. This does not mean sanitation is unimportant: its effect may run through infections the model cannot see, and the cross-sectional design cannot separate causes. Still, the modest predictive accuracy and the regionally clustered errors show that much of the variation in anemia comes from factors outside this dataset, such as diet, deworming coverage, and genetic blood disorders.
+
+**Limitations.** The data are cross-sectional and pool surveys from 2000–2021. Malaria comes from modelled surfaces rather than measurements. Cluster anemia rates rest on small samples. GPS displacement blurs the raster extraction. Five sub-Saharan countries drop out for lack of GPS or hemoglobin data. Future work could add deworming and diet indicators, model each survey round separately to track change over time, and use spatial cross-validation (holding out whole regions) for a stricter test of the model.
+
+*Interactive maps and charts, code, and full methods: see the other pages of this site. Code: the project GitHub repository.*
