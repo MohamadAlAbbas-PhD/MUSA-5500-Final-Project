@@ -21,6 +21,10 @@ HTML(f"""
 </div>""")
 ```
 
+::: {.callout-tip appearance="simple"}
+**Start here →** the **[interactive story website](website/index.html)**: an atlas you can recolour by anemia, open defecation, malaria, or rainfall, filter by profile, brush with a linked chart, and explore DBSCAN hotspots. The full analysis lives in the **Notebooks** menu.
+:::
+
 **Anemia** affects most young children in sub-Saharan Africa, and it slows growth and learning. Two well-known causes are **malaria**, which destroys red blood cells, and poor **sanitation**: when households have no toilet, worm infections and gut inflammation follow. This project asks where these problems **pile up in the same places**, whether places fall into a few recognisable **profiles**, and how well open defecation, malaria, rainfall, and household conditions can **predict** anemia.
 
 ## Three things this project found
@@ -59,4 +63,4 @@ h = alt.Chart(hx).mark_geoshape(stroke="white", strokeWidth=0.15).encode(
 (base + h).project("equalEarth").properties(width=820, height=640).configure_view(stroke=None)
 ```
 
-**Explore it yourself:** the [Map explorer](explore.qmd) toggles every measure and the open raster surfaces. [Where they overlap](overlap.qmd) has linked charts you can brush and filter. [Profiles & hotspots](profiles.qmd) explains the k-means groups and DBSCAN hotspots. [Predicting anemia](model.qmd) shows where the model gets it wrong.
+**Explore it yourself:** the [Story website](website/index.html) is the main interactive atlas. The [Map explorer](explore.qmd) toggles every measure and the open raster surfaces. [Where they overlap](overlap.qmd) has linked charts you can brush and filter. [Profiles & hotspots](profiles.qmd) explains the k-means groups and DBSCAN hotspots. [Predicting anemia](model.qmd) shows where the model gets it wrong.

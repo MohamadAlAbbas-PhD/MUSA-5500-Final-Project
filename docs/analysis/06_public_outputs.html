@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Step 6. Aggregate private cluster results into PUBLIC, non-identifying outputs. – Malaria · Sanitation · Anemia</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-9f3bd175c10802df2928bec4c6c0e599.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Malaria · Sanitation · Anemia</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../explore.html"> 
+<span class="menu-text">Map explorer</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../overlap.html"> 
+<span class="menu-text">Where they overlap</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../profiles.html"> 
+<span class="menu-text">Profiles &amp; hotspots</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../model.html"> 
+<span class="menu-text">Predicting anemia</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../website/index.html"> 
+<span class="menu-text">Story website</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-notebooks" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Notebooks</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-notebooks">    
+        <li>
+    <a class="dropdown-item" href="../analysis/01_build_clusters.html">
+ <span class="dropdown-text">1 · Build the cluster table</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../analysis/02_raster_features.html">
+ <span class="dropdown-text">2 · Raster analysis (malaria, rainfall)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../analysis/03_download_boundaries.html">
+ <span class="dropdown-text">3 · Region boundaries (API)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../analysis/04_profiles_hotspots.html">
+ <span class="dropdown-text">4 · k-means profiles &amp; DBSCAN hotspots</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../analysis/05_predict_anemia.html">
+ <span class="dropdown-text">5 · Predicting anemia (ML)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../analysis/06_public_outputs.html">
+ <span class="dropdown-text">6 · Privacy-safe exports</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../methods.html"> 
+<span class="menu-text">Data &amp; methods</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../report.html"> 
+<span class="menu-text">Report</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#hexagons" id="toc-hexagons" class="nav-link active" data-scroll-target="#hexagons">Hexagons</a></li>
+  <li><a href="#admin-1-regions" id="toc-admin-1-regions" class="nav-link" data-scroll-target="#admin-1-regions">Admin-1 regions</a></li>
+  <li><a href="#by-country" id="toc-by-country" class="nav-link" data-scroll-target="#by-country">By country</a></li>
+  <li><a href="#open-raster-layers-as-images-for-map-overlays" id="toc-open-raster-layers-as-images-for-map-overlays" class="nav-link" data-scroll-target="#open-raster-layers-as-images-for-map-overlays">Open raster layers as images (for map overlays)</a></li>
+  <li><a href="#headline-numbers" id="toc-headline-numbers" class="nav-link" data-scroll-target="#headline-numbers">Headline numbers</a></li>
+  <li><a href="#what-gets-published-hexagons" id="toc-what-gets-published-hexagons" class="nav-link" data-scroll-target="#what-gets-published-hexagons">What gets published: hexagons</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-page-left" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Step 6. Aggregate private cluster results into PUBLIC, non-identifying outputs.</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-page-left">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>DHS forbids sharing cluster GPS points, so everything published is aggregated: * hexagons (H3 resolution 4, ~23 km edge, ~1,770 km2), hidden if &lt; 3 clusters * admin-1 regions, hidden if &lt; 5 clusters * open raster layers (MAP malaria, CHIRPS rainfall) as map images</p>
+<p>Output (data/public/): hexes.geojson, regions.geojson, profiles_by_country.csv, raster_*.png + raster_bounds.json, sample_summary.json</p>
+<p><em>Run on the author’s computer. The DHS data are private, so the outputs shown here are summaries only (no cluster locations or survey records).</em></p>
+<div id="4c02cd18" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-14T16:35:24.829727Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-11-14T16:35:24.829512Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-11-14T16:35:25.659305Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-14T16:35:25.658655Z&quot;}}" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> h3</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xarray <span class="im">as</span> xr</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.image</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> cm, colors</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.geometry <span class="im">import</span> Polygon</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> config <span class="im">import</span> PRIVATE, PUBLIC, MAP_DIR, CHIRPS_MONTHLY, AFRICA_BBOX</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="c29e7a77" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-14T16:35:25.661170Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-11-14T16:35:25.660917Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-11-14T16:35:25.704136Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-14T16:35:25.703578Z&quot;}}" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>H3_RES, MIN_HEX, MIN_REGION <span class="op">=</span> <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">5</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>cl <span class="op">=</span> pd.read_parquet(PRIVATE <span class="op">/</span> <span class="st">"clusters_final.parquet"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>allc <span class="op">=</span> pd.read_parquet(PRIVATE <span class="op">/</span> <span class="st">"clusters_profiles.parquet"</span>)      <span class="co"># includes clusters w/o all model features</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>allc <span class="op">=</span> allc.merge(cl[[<span class="st">"idhspsu"</span>, <span class="st">"pred_rf"</span>, <span class="st">"resid_rf"</span>, <span class="st">"abs_err_rf"</span>]], on<span class="op">=</span><span class="st">"idhspsu"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>n_prof <span class="op">=</span> allc.profile.<span class="bu">max</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="a21468bc" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-14T16:35:25.705365Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-11-14T16:35:25.705222Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-11-14T16:35:25.709653Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-14T16:35:25.709110Z&quot;}}" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> summarise(g):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> g.agg(n_clusters<span class="op">=</span>(<span class="st">"idhspsu"</span>, <span class="st">"size"</span>), n_children<span class="op">=</span>(<span class="st">"n_children"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                anemia_pct<span class="op">=</span>(<span class="st">"anemia_pct"</span>, <span class="st">"mean"</span>), modsev_anemia_pct<span class="op">=</span>(<span class="st">"modsev_anemia_pct"</span>, <span class="st">"mean"</span>),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                od_pct<span class="op">=</span>(<span class="st">"od_pct"</span>, <span class="st">"mean"</span>), pfpr<span class="op">=</span>(<span class="st">"pfpr"</span>, <span class="st">"mean"</span>),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                rain_3mo_z<span class="op">=</span>(<span class="st">"rain_3mo_z"</span>, <span class="st">"mean"</span>), rain_annual_mm<span class="op">=</span>(<span class="st">"rain_annual_mm"</span>, <span class="st">"mean"</span>),</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                wealth<span class="op">=</span>(<span class="st">"wealth"</span>, <span class="st">"mean"</span>), mom_secondary_pct<span class="op">=</span>(<span class="st">"mom_secondary_pct"</span>, <span class="st">"mean"</span>),</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                urban_pct<span class="op">=</span>(<span class="st">"urban"</span>, <span class="st">"mean"</span>), in_hotspot_pct<span class="op">=</span>(<span class="st">"in_hotspot"</span>, <span class="st">"mean"</span>),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                pred_anemia_pct<span class="op">=</span>(<span class="st">"pred_rf"</span>, <span class="st">"mean"</span>), resid<span class="op">=</span>(<span class="st">"resid_rf"</span>, <span class="st">"mean"</span>), abs_err<span class="op">=</span>(<span class="st">"abs_err_rf"</span>, <span class="st">"mean"</span>),</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                year_min<span class="op">=</span>(<span class="st">"int_year"</span>, <span class="st">"min"</span>), year_max<span class="op">=</span>(<span class="st">"int_year"</span>, <span class="st">"max"</span>),</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                hot_25<span class="op">=</span>(<span class="st">"hot_25"</span>, <span class="st">"mean"</span>), hot_50<span class="op">=</span>(<span class="st">"hot_50"</span>, <span class="st">"mean"</span>), hot_75<span class="op">=</span>(<span class="st">"hot_75"</span>, <span class="st">"mean"</span>),</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                hot_100<span class="op">=</span>(<span class="st">"hot_100"</span>, <span class="st">"mean"</span>),</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>                country<span class="op">=</span>(<span class="st">"country"</span>, <span class="kw">lambda</span> s: s.mode().iat[<span class="dv">0</span>]))</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> e <span class="kw">in</span> (<span class="dv">25</span>, <span class="dv">50</span>, <span class="dv">75</span>, <span class="dv">100</span>):</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        out[<span class="ss">f"hot_</span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>] <span class="op">*=</span> <span class="dv">100</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    out[<span class="st">"urban_pct"</span>] <span class="op">*=</span> <span class="dv">100</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    out[<span class="st">"in_hotspot_pct"</span>] <span class="op">*=</span> <span class="dv">100</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    shares <span class="op">=</span> pd.crosstab(g.obj[g.keys] <span class="cf">if</span> <span class="bu">isinstance</span>(g.keys, <span class="bu">str</span>) <span class="cf">else</span> g.obj[g.keys[<span class="dv">0</span>]],</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>                         g.obj[<span class="st">"profile"</span>], normalize<span class="op">=</span><span class="st">"index"</span>) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    shares <span class="op">=</span> shares.reindex(columns<span class="op">=</span><span class="bu">range</span>(<span class="dv">1</span>, n_prof <span class="op">+</span> <span class="dv">1</span>), fill_value<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    shares.columns <span class="op">=</span> [<span class="ss">f"profile</span><span class="sc">{</span>p<span class="sc">}</span><span class="ss">_pct"</span> <span class="cf">for</span> p <span class="kw">in</span> shares.columns]</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> out.join(shares)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    out[<span class="st">"profile"</span>] <span class="op">=</span> shares.to_numpy().argmax(axis<span class="op">=</span><span class="dv">1</span>) <span class="op">+</span> <span class="dv">1</span>          <span class="co"># most common profile</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    names <span class="op">=</span> allc.drop_duplicates(<span class="st">"profile"</span>).set_index(<span class="st">"profile"</span>).profile_name</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    out[<span class="st">"profile_name"</span>] <span class="op">=</span> out.profile.<span class="bu">map</span>(names)</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># dominant DBSCAN hotspot id (0 = none)</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    hs <span class="op">=</span> g.obj[g.obj.hotspot <span class="op">&gt;=</span> <span class="dv">0</span>].groupby(g.keys).hotspot.agg(<span class="kw">lambda</span> s: s.mode().iat[<span class="dv">0</span>] <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    out[<span class="st">"hotspot_id"</span>] <span class="op">=</span> hs.reindex(out.index).fillna(<span class="dv">0</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> out</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="hexagons" class="level2">
+<h2 class="anchored" data-anchor-id="hexagons">Hexagons</h2>
+<div id="684e84f5" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-14T16:35:25.710785Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-11-14T16:35:25.710679Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-11-14T16:35:26.097042Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-14T16:35:26.096250Z&quot;}}" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>allc[<span class="st">"hex"</span>] <span class="op">=</span> [h3.latlng_to_cell(la, lo, H3_RES) <span class="cf">for</span> la, lo <span class="kw">in</span> <span class="bu">zip</span>(allc.lat, allc.lon)]</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>hx <span class="op">=</span> summarise(allc.groupby(<span class="st">"hex"</span>))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>hx <span class="op">=</span> hx[hx.n_clusters <span class="op">&gt;=</span> MIN_HEX].reset_index()</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>hx[<span class="st">"geometry"</span>] <span class="op">=</span> [Polygon([(lo, la) <span class="cf">for</span> la, lo <span class="kw">in</span> h3.cell_to_boundary(h)]) <span class="cf">for</span> h <span class="kw">in</span> hx.<span class="bu">hex</span>]</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>hx <span class="op">=</span> gpd.GeoDataFrame(hx, crs<span class="op">=</span><span class="st">"EPSG:4326"</span>).<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>hx[<span class="st">"hex"</span>] <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(hx) <span class="op">+</span> <span class="dv">1</span>)                                   <span class="co"># drop the real H3 id</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>hx.to_file(PUBLIC <span class="op">/</span> <span class="st">"hexes.geojson"</span>, driver<span class="op">=</span><span class="st">"GeoJSON"</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Hexes: </span><span class="sc">{</span><span class="bu">len</span>(hx)<span class="sc">:,}</span><span class="ss"> shown (&gt;= </span><span class="sc">{</span>MIN_HEX<span class="sc">}</span><span class="ss"> clusters), covering </span><span class="sc">{</span>hx<span class="sc">.</span>n_clusters<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,}</span><span class="ss"> of </span><span class="sc">{</span><span class="bu">len</span>(allc)<span class="sc">:,}</span><span class="ss"> clusters"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Hexes: 2,037 shown (&gt;= 3 clusters), covering 19,669 of 22,097 clusters</code></pre>
+</div>
+</div>
+</section>
+<section id="admin-1-regions" class="level2">
+<h2 class="anchored" data-anchor-id="admin-1-regions">Admin-1 regions</h2>
+<div id="e8659aed" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-14T16:35:26.098266Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-11-14T16:35:26.098101Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-11-14T16:35:26.289614Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-14T16:35:26.289121Z&quot;}}" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>adm <span class="op">=</span> gpd.read_file(PUBLIC <span class="op">/</span> <span class="st">"admin1.geojson"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>pts <span class="op">=</span> gpd.GeoDataFrame(allc, geometry<span class="op">=</span>gpd.points_from_xy(allc.lon, allc.lat), crs<span class="op">=</span><span class="st">"EPSG:4326"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>pts <span class="op">=</span> gpd.sjoin(pts, adm[[<span class="st">"region_id"</span>, <span class="st">"geometry"</span>]], how<span class="op">=</span><span class="st">"left"</span>, predicate<span class="op">=</span><span class="st">"within"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># clusters falling just outside a polygon (coast, displacement) -&gt; nearest region</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>miss <span class="op">=</span> pts.region_id.isna()</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> miss.<span class="bu">any</span>():</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    near <span class="op">=</span> gpd.sjoin_nearest(pts.loc[miss, [<span class="st">"geometry"</span>]].to_crs(<span class="dv">3857</span>),</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>                             adm[[<span class="st">"region_id"</span>, <span class="st">"geometry"</span>]].to_crs(<span class="dv">3857</span>), how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    pts.loc[miss, <span class="st">"region_id"</span>] <span class="op">=</span> near.groupby(level<span class="op">=</span><span class="dv">0</span>).region_id.first()</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>pts <span class="op">=</span> pd.DataFrame(pts.drop(columns<span class="op">=</span>[<span class="st">"geometry"</span>, <span class="st">"index_right"</span>]))</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>rg <span class="op">=</span> summarise(pts.groupby(<span class="st">"region_id"</span>)).drop(columns<span class="op">=</span><span class="st">"country"</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>rg <span class="op">=</span> rg[rg.n_clusters <span class="op">&gt;=</span> MIN_REGION]</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>regions <span class="op">=</span> adm.merge(rg.reset_index(), on<span class="op">=</span><span class="st">"region_id"</span>, how<span class="op">=</span><span class="st">"left"</span>).<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>regions.to_file(PUBLIC <span class="op">/</span> <span class="st">"regions.geojson"</span>, driver<span class="op">=</span><span class="st">"GeoJSON"</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Regions: </span><span class="sc">{</span>rg<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">}</span><span class="ss"> of </span><span class="sc">{</span><span class="bu">len</span>(adm)<span class="sc">}</span><span class="ss"> with &gt;= </span><span class="sc">{</span>MIN_REGION<span class="sc">}</span><span class="ss"> clusters"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Regions: 325 of 334 with &gt;= 5 clusters</code></pre>
+</div>
+</div>
+</section>
+<section id="by-country" class="level2">
+<h2 class="anchored" data-anchor-id="by-country">By country</h2>
+<div id="363f9c80" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-14T16:35:26.291181Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-11-14T16:35:26.290973Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-11-14T16:35:26.300944Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-14T16:35:26.300382Z&quot;}}" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>bc <span class="op">=</span> (pd.crosstab(allc.country, allc.profile_name, normalize<span class="op">=</span><span class="st">"index"</span>) <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">1</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>bc[<span class="st">"n_clusters"</span>] <span class="op">=</span> allc.groupby(<span class="st">"country"</span>).size()</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>bc[<span class="st">"anemia_pct"</span>] <span class="op">=</span> allc.groupby(<span class="st">"country"</span>).anemia_pct.mean().<span class="bu">round</span>(<span class="dv">1</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>bc.reset_index().to_csv(PUBLIC <span class="op">/</span> <span class="st">"profiles_by_country.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="open-raster-layers-as-images-for-map-overlays" class="level2">
+<h2 class="anchored" data-anchor-id="open-raster-layers-as-images-for-map-overlays">Open raster layers as images (for map overlays)</h2>
+<div id="fa6e489a" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-14T16:35:26.301958Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-11-14T16:35:26.301841Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-11-14T16:35:26.304796Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-14T16:35:26.304375Z&quot;}}" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> to_png(arr, path, cmap, vmin, vmax):</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    rgba <span class="op">=</span> matplotlib.colormaps[cmap](colors.Normalize(vmin, vmax)(arr))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    rgba[..., <span class="dv">3</span>] <span class="op">=</span> np.where(np.isnan(arr), <span class="dv">0</span>, <span class="fl">0.75</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    matplotlib.image.imsave(path, rgba)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="ae1d0ef1" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-14T16:35:26.305922Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-11-14T16:35:26.305771Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-11-14T16:35:26.823360Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-14T16:35:26.822756Z&quot;}}" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>bounds <span class="op">=</span> {}</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> yr <span class="kw">in</span> (<span class="dv">2005</span>, <span class="dv">2020</span>):</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> rasterio.<span class="bu">open</span>(MAP_DIR <span class="op">/</span> <span class="ss">f"PfPR_2-10_Africa_</span><span class="sc">{</span>yr<span class="sc">}</span><span class="ss">.tif"</span>) <span class="im">as</span> src:</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> src.read(<span class="dv">1</span>).astype(<span class="st">"float32"</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        a[a <span class="op">&lt;</span> <span class="dv">0</span>] <span class="op">=</span> np.nan</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> a[::<span class="dv">2</span>, ::<span class="dv">2</span>] <span class="op">*</span> <span class="dv">100</span>                                       <span class="co"># ~10 km, enough for a web map</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        to_png(a, PUBLIC <span class="op">/</span> <span class="ss">f"raster_malaria_</span><span class="sc">{</span>yr<span class="sc">}</span><span class="ss">.png"</span>, <span class="st">"YlOrRd"</span>, <span class="dv">0</span>, <span class="dv">70</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        b <span class="op">=</span> src.bounds</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        bounds[<span class="ss">f"malaria_</span><span class="sc">{</span>yr<span class="sc">}</span><span class="ss">"</span>] <span class="op">=</span> [[b.bottom, b.left], [b.top, b.right]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="da7210cb" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-14T16:35:26.825300Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-11-14T16:35:26.825104Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-11-14T16:36:33.358375Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-14T16:36:33.357800Z&quot;}}" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>lon0, lat0, lon1, lat1 <span class="op">=</span> AFRICA_BBOX</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>ann <span class="op">=</span> []</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1981</span>, <span class="dv">2011</span>):</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    da <span class="op">=</span> xr.open_dataset(CHIRPS_MONTHLY <span class="op">/</span> <span class="ss">f"CHIRPS_monthly_</span><span class="sc">{</span>y<span class="sc">}</span><span class="ss">.nc"</span>)[<span class="st">"precip"</span>]</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    ann.append(da.sel(longitude<span class="op">=</span><span class="bu">slice</span>(lon0, lon1), latitude<span class="op">=</span><span class="bu">slice</span>(lat1, lat0))[:, ::<span class="dv">4</span>, ::<span class="dv">4</span>].<span class="bu">sum</span>(<span class="st">"time"</span>).values)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>ann <span class="op">=</span> np.mean(ann, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>ann[ann <span class="op">&lt;=</span> <span class="dv">0</span>] <span class="op">=</span> np.nan</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>to_png(ann, PUBLIC <span class="op">/</span> <span class="st">"raster_rain_annual.png"</span>, <span class="st">"YlGnBu"</span>, <span class="dv">0</span>, <span class="dv">2500</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>bounds[<span class="st">"rain_annual"</span>] <span class="op">=</span> [[lat0, lon0], [lat1, lon1]]</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>json.dump(bounds, <span class="bu">open</span>(PUBLIC <span class="op">/</span> <span class="st">"raster_bounds.json"</span>, <span class="st">"w"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="headline-numbers" class="level2">
+<h2 class="anchored" data-anchor-id="headline-numbers">Headline numbers</h2>
+<div id="b59356ed" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-14T16:36:33.360042Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-11-14T16:36:33.359911Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-11-14T16:36:33.370779Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-14T16:36:33.370267Z&quot;}}" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>flow <span class="op">=</span> pd.read_csv(PRIVATE <span class="op">/</span> <span class="st">"sample_flow.csv"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> {<span class="st">"children"</span>: <span class="bu">int</span>(allc.n_children.<span class="bu">sum</span>()), <span class="st">"clusters"</span>: <span class="bu">len</span>(allc),</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>           <span class="st">"countries"</span>: <span class="bu">int</span>(allc.country.nunique()), <span class="st">"surveys"</span>: <span class="bu">int</span>(allc[<span class="st">"sample"</span>].nunique()),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>           <span class="st">"year_min"</span>: <span class="bu">int</span>(allc.int_year.<span class="bu">min</span>()), <span class="st">"year_max"</span>: <span class="bu">int</span>(allc.int_year.<span class="bu">max</span>()),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>           <span class="st">"anemia_pct"</span>: <span class="bu">round</span>(<span class="bu">float</span>(allc.anemia_pct.mean()), <span class="dv">1</span>),</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>           <span class="st">"hex_shown"</span>: <span class="bu">len</span>(hx), <span class="st">"regions_shown"</span>: <span class="bu">int</span>(rg.shape[<span class="dv">0</span>]),</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>           <span class="st">"sample_flow"</span>: flow.to_dict(orient<span class="op">=</span><span class="st">"records"</span>)}</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>json.dump(summary, <span class="bu">open</span>(PUBLIC <span class="op">/</span> <span class="st">"sample_summary.json"</span>, <span class="st">"w"</span>), indent<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(json.dumps({k: v <span class="cf">for</span> k, v <span class="kw">in</span> summary.items() <span class="cf">if</span> k <span class="op">!=</span> <span class="st">"sample_flow"</span>}))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{"children": 236822, "clusters": 22097, "countries": 28, "surveys": 68, "year_min": 2000, "year_max": 2021, "anemia_pct": 63.5, "hex_shown": 2037, "regions_shown": 325}</code></pre>
+</div>
+</div>
+</section>
+<section id="what-gets-published-hexagons" class="level2">
+<h2 class="anchored" data-anchor-id="what-gets-published-hexagons">What gets published: hexagons</h2>
+<div id="3e4dcb67" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-14T16:36:33.372231Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-11-14T16:36:33.372113Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-11-14T16:36:34.090700Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-14T16:36:34.090155Z&quot;}}" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">5</span>))</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, (col, cmap, title) <span class="kw">in</span> <span class="bu">zip</span>(axes, [(<span class="st">"anemia_pct"</span>, <span class="st">"Reds"</span>, <span class="st">"Anemia (%)"</span>),</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                                         (<span class="st">"od_pct"</span>, <span class="st">"YlOrBr"</span>, <span class="st">"No toilet (%)"</span>),</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>                                         (<span class="st">"pfpr"</span>, <span class="st">"Purples"</span>, <span class="st">"Malaria (%)"</span>)]):</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    adm.boundary.plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">"#bbb"</span>, lw<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    hx.plot(col, ax<span class="op">=</span>ax, cmap<span class="op">=</span>cmap, legend<span class="op">=</span><span class="va">True</span>, legend_kwds<span class="op">=</span>{<span class="st">"shrink"</span>: <span class="fl">0.6</span>})</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    ax.set_title(title)<span class="op">;</span> ax.set_axis_off()</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="06_public_outputs_files/figure-html/cell-12-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Mohamad AlAbbas · MUSA 5500 Geospatial Data Science in Python · University of Pennsylvania, Fall 2026</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

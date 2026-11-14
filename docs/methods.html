@@ -156,6 +156,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Predicting anemia</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="./website/index.html"> 
+<span class="menu-text">Story website</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-notebooks" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Notebooks</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-notebooks">    
+        <li>
+    <a class="dropdown-item" href="./analysis/01_build_clusters.html">
+ <span class="dropdown-text">1 · Build the cluster table</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./analysis/02_raster_features.html">
+ <span class="dropdown-text">2 · Raster analysis (malaria, rainfall)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./analysis/03_download_boundaries.html">
+ <span class="dropdown-text">3 · Region boundaries (API)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./analysis/04_profiles_hotspots.html">
+ <span class="dropdown-text">4 · k-means profiles &amp; DBSCAN hotspots</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./analysis/05_predict_anemia.html">
+ <span class="dropdown-text">5 · Predicting anemia (ML)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./analysis/06_public_outputs.html">
+ <span class="dropdown-text">6 · Privacy-safe exports</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
     <a class="nav-link active" href="./methods.html" aria-current="page"> 
 <span class="menu-text">Data &amp; methods</span></a>
   </li>  
@@ -214,6 +249,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<div class="howto">
+<p>The analysis is in six <strong>Jupyter notebooks</strong> (menu <strong>Notebooks</strong> above), run on my computer and published with their saved outputs. The interactive results are on the <strong><a href="website/index.html">Story website</a></strong> and the analysis pages.</p>
+</div>
 <section id="the-pipeline-at-a-glance" class="level2">
 <h2 class="anchored" data-anchor-id="the-pipeline-at-a-glance">The pipeline at a glance</h2>
 <div class="cell" data-layout-align="default">
@@ -291,7 +329,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<div id="a063b800" class="cell" data-execution_count="2">
+<div id="aaad363f" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display" data-execution_count="2">
 <b>Sample: from 3 million child records to the analysis sample</b>
 <table class="dataframe table table-sm caption-top table-striped small" data-border="1">
@@ -353,90 +391,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Wealth</strong>: the average household wealth quintile (1 = poorest fifth of the country, 5 = richest)</li>
 <li><strong>Mothers with secondary school (%)</strong>, <strong>urban/rural</strong>, and the <strong>interview month</strong></li>
 </ul>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Show the code: <code>analysis/01_build_clusters.py</code> (pandas)
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">"""Step 1. Turn DHS child records into one row per survey cluster.</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">Input : IPUMS-DHS extract (private)</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">Output: data/private/clusters.parquet  (private: contains GPS)</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyreadstat</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> config <span class="im">import</span> DHS_FILE, PRIVATE, SSA, MIN_CHILDREN</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> [<span class="st">"sample"</span>, <span class="st">"country"</span>, <span class="st">"year"</span>, <span class="st">"idhspsu"</span>, <span class="st">"intyear"</span>, <span class="st">"monthint"</span>, <span class="st">"urban"</span>,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"wealthq"</span>, <span class="st">"educlvl"</span>, <span class="st">"kidalive"</span>, <span class="st">"kidagemo"</span>, <span class="st">"anemialvlkid"</span>,</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"opentoiletpsu"</span>, <span class="st">"gpslat"</span>, <span class="st">"gpslong"</span>, <span class="st">"perweight"</span>]</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Reading DHS extract (this takes a few minutes)..."</span>)</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>d, meta <span class="op">=</span> pyreadstat.read_dta(<span class="bu">str</span>(DHS_FILE), usecols<span class="op">=</span>cols)</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span><span class="bu">len</span>(d)<span class="sc">:,}</span><span class="ss"> child records, </span><span class="sc">{</span>d<span class="sc">.</span>country<span class="sc">.</span>nunique()<span class="sc">}</span><span class="ss"> countries"</span>)</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>flow <span class="op">=</span> [(<span class="st">"All child records"</span>, <span class="bu">len</span>(d))]</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> keep(mask, label):</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> d</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    d <span class="op">=</span> d[mask]</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    flow.append((label, <span class="bu">len</span>(d)))</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>keep(d.country.isin(SSA.keys()), <span class="st">"Sub-Saharan Africa"</span>)</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>keep(d.kidalive <span class="op">==</span> <span class="dv">1</span>, <span class="st">"Child alive"</span>)</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>keep(d.kidagemo.between(<span class="dv">6</span>, <span class="dv">59</span>), <span class="st">"Aged 6-59 months"</span>)</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>keep(d.anemialvlkid.isin([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>]), <span class="st">"Tested for anemia"</span>)</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>ok_gps <span class="op">=</span> d.gpslat.notna() <span class="op">&amp;</span> d.gpslong.notna() <span class="op">&amp;</span> <span class="op">~</span>((d.gpslat <span class="op">==</span> <span class="dv">0</span>) <span class="op">&amp;</span> (d.gpslong <span class="op">==</span> <span class="dv">0</span>))</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>keep(ok_gps, <span class="st">"Cluster has GPS coordinates"</span>)</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>keep(d.opentoiletpsu.between(<span class="dv">0</span>, <span class="dv">100</span>), <span class="st">"Cluster open defecation share available"</span>)</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>keep(d.urban.isin([<span class="dv">1</span>, <span class="dv">2</span>]), <span class="st">"Urban/rural known"</span>)</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>d[<span class="st">"anemic"</span>] <span class="op">=</span> (d.anemialvlkid <span class="op">&lt;=</span> <span class="dv">3</span>).astype(<span class="bu">float</span>)            <span class="co"># any anemia (Hb &lt; 11 g/dL, altitude-adjusted)</span></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>d[<span class="st">"mod_sev"</span>] <span class="op">=</span> (d.anemialvlkid <span class="op">&lt;=</span> <span class="dv">2</span>).astype(<span class="bu">float</span>)          <span class="co"># moderate or severe</span></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>d[<span class="st">"mom_secondary"</span>] <span class="op">=</span> np.where(d.educlvl.isin([<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]), (d.educlvl <span class="op">&gt;=</span> <span class="dv">2</span>).astype(<span class="bu">float</span>), np.nan)</span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>d[<span class="st">"country_name"</span>] <span class="op">=</span> d.country.<span class="bu">map</span>(SSA)</span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>d[<span class="st">"wealthq_ok"</span>] <span class="op">=</span> d.wealthq.where(d.wealthq.between(<span class="dv">1</span>, <span class="dv">5</span>))</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> d.groupby(<span class="st">"idhspsu"</span>)</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>cl <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sample"</span>: g[<span class="st">"sample"</span>].first(),</span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    <span class="st">"country"</span>: g[<span class="st">"country_name"</span>].first(),</span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>    <span class="st">"survey_year"</span>: g[<span class="st">"year"</span>].first(),</span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>    <span class="st">"int_year"</span>: g[<span class="st">"intyear"</span>].agg(<span class="kw">lambda</span> s: s.mode().iat[<span class="dv">0</span>]).astype(<span class="bu">int</span>),</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>    <span class="st">"int_month"</span>: g[<span class="st">"monthint"</span>].agg(<span class="kw">lambda</span> s: s.mode().iat[<span class="dv">0</span>]).astype(<span class="bu">int</span>),</span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>    <span class="st">"urban"</span>: (g[<span class="st">"urban"</span>].first() <span class="op">==</span> <span class="dv">1</span>).astype(<span class="bu">int</span>),</span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lat"</span>: g[<span class="st">"gpslat"</span>].first(),</span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lon"</span>: g[<span class="st">"gpslong"</span>].first(),</span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>    <span class="st">"n_children"</span>: g.size(),</span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>    <span class="st">"anemia_pct"</span>: g[<span class="st">"anemic"</span>].mean() <span class="op">*</span> <span class="dv">100</span>,</span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>    <span class="st">"modsev_anemia_pct"</span>: g[<span class="st">"mod_sev"</span>].mean() <span class="op">*</span> <span class="dv">100</span>,</span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>    <span class="st">"od_pct"</span>: g[<span class="st">"opentoiletpsu"</span>].first(),</span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>    <span class="st">"wealth"</span>: g[<span class="st">"wealthq_ok"</span>].mean(),       <span class="co"># mean household wealth quintile, 1 = poorest, 5 = richest (relative to own country)</span></span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>    <span class="st">"mom_secondary_pct"</span>: g[<span class="st">"mom_secondary"</span>].mean() <span class="op">*</span> <span class="dv">100</span>,</span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>}).reset_index()</span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>n_before <span class="op">=</span> <span class="bu">len</span>(cl)</span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>cl <span class="op">=</span> cl[cl.n_children <span class="op">&gt;=</span> MIN_CHILDREN].copy()</span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>flow.append((<span class="ss">f"Children in clusters with &gt;= </span><span class="sc">{</span>MIN_CHILDREN<span class="sc">}</span><span class="ss"> tested children"</span>, <span class="bu">int</span>(cl.n_children.<span class="bu">sum</span>())))</span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>cl.to_parquet(PRIVATE <span class="op">/</span> <span class="st">"clusters.parquet"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(flow, columns<span class="op">=</span>[<span class="st">"step"</span>, <span class="st">"remaining"</span>]).to_csv(PRIVATE <span class="op">/</span> <span class="st">"sample_flow.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.DataFrame(flow, columns<span class="op">=</span>[<span class="st">"step"</span>, <span class="st">"remaining"</span>]).to_string(index<span class="op">=</span><span class="va">False</span>))</span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Clusters: </span><span class="sc">{</span>n_before<span class="sc">:,}</span><span class="ss"> -&gt; </span><span class="sc">{</span><span class="bu">len</span>(cl)<span class="sc">:,}</span><span class="ss"> kept; </span><span class="sc">{</span>cl<span class="sc">.</span>country<span class="sc">.</span>nunique()<span class="sc">}</span><span class="ss"> countries; "</span></span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"</span><span class="sc">{</span>cl[<span class="st">'sample'</span>]<span class="sc">.</span>nunique()<span class="sc">}</span><span class="ss"> surveys; years </span><span class="sc">{</span>cl<span class="sc">.</span>int_year<span class="sc">.</span><span class="bu">min</span>()<span class="sc">}</span><span class="ss">-</span><span class="sc">{</span>cl<span class="sc">.</span>int_year<span class="sc">.</span><span class="bu">max</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(cl.groupby(<span class="st">"country"</span>).size().sort_values(ascending<span class="op">=</span><span class="va">False</span>).to_string())</span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(cl[[<span class="st">"anemia_pct"</span>, <span class="st">"od_pct"</span>, <span class="st">"wealth"</span>, <span class="st">"mom_secondary_pct"</span>, <span class="st">"n_children"</span>]].describe().<span class="bu">round</span>(<span class="dv">2</span>).to_string())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<p>📓 <strong><a href="./analysis/01_build_clusters.html">Notebook 1 · Build the cluster table</a></strong> shows the full code and outputs.</p>
 </section>
 <section id="step-2-raster-analysis-malaria-and-rainfall-around-each-cluster" class="level2">
 <h2 class="anchored" data-anchor-id="step-2-raster-analysis-malaria-and-rainfall-around-each-cluster">Step 2 · Raster analysis: malaria and rainfall around each cluster</h2>
@@ -447,186 +402,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Typical annual rainfall:</strong> the 1981–2010 average.</li>
 </ul>
 <p>As a check, the rainfall anomalies correlate at <strong>0.78</strong> with the ones computed independently in R from the daily CHIRPS v3 data in my other project. The two use different CHIRPS versions and different window definitions, so they should not match exactly.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Show the code: <code>analysis/02_raster_features.py</code> (geopandas, rasterio, rasterstats, xarray)
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">"""Step 2. Add raster-based features to each cluster (zonal statistics).</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">  * Buffers: 2 km (urban) / 5 km (rural), matching DHS GPS displacement.</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">  * Malaria: Malaria Atlas Project P. falciparum prevalence (age 2-10),</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">             mean over the buffer, for the cluster's interview year.</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">  * Rainfall: CHIRPS monthly. Total rain in the 3 months before the interview</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">              month, as a standardized anomaly (z-score) against the same</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">              3 calendar months in 1981-2010 at that location.</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">              Plus the long-term (1981-2010) mean annual rainfall.</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">Input : data/private/clusters.parquet</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">Output: data/private/clusters_features.parquet</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xarray <span class="im">as</span> xr</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rasterio.transform <span class="im">import</span> from_origin</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rasterstats <span class="im">import</span> zonal_stats</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> config <span class="im">import</span> PRIVATE, CHIRPS_MONTHLY, MAP_DIR, AFRICA_BBOX, AFRICA_EQUAL_AREA</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>cl <span class="op">=</span> pd.read_parquet(PRIVATE <span class="op">/</span> <span class="st">"clusters.parquet"</span>)</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>pts <span class="op">=</span> gpd.GeoDataFrame(cl, geometry<span class="op">=</span>gpd.points_from_xy(cl.lon, cl.lat), crs<span class="op">=</span><span class="st">"EPSG:4326"</span>)</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- buffers (in metres, using an equal-area projection) ------------------</span></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>pts_m <span class="op">=</span> pts.to_crs(AFRICA_EQUAL_AREA)</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>radius <span class="op">=</span> np.where(pts_m.urban <span class="op">==</span> <span class="dv">1</span>, <span class="dv">2000</span>, <span class="dv">5000</span>)</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>buf <span class="op">=</span> pts_m.<span class="bu">buffer</span>(radius).to_crs(<span class="st">"EPSG:4326"</span>)</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(buf)<span class="sc">:,}</span><span class="ss"> buffers built"</span>)</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> zonal_mean(geoms, array, transform, nodata):</span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> zonal_stats(<span class="bu">list</span>(geoms), array, affine<span class="op">=</span>transform, stats<span class="op">=</span>[<span class="st">"mean"</span>],</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>                      nodata<span class="op">=</span>nodata, all_touched<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array([o[<span class="st">"mean"</span>] <span class="cf">if</span> o[<span class="st">"mean"</span>] <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> np.nan <span class="cf">for</span> o <span class="kw">in</span> out])</span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- malaria (MAP PfPR 2-10), matched to interview year --------------------</span></span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>cl[<span class="st">"pfpr"</span>] <span class="op">=</span> np.nan</span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> yr, idx <span class="kw">in</span> cl.groupby(cl.int_year.clip(<span class="dv">2000</span>, <span class="dv">2021</span>)).groups.items():</span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> rasterio.<span class="bu">open</span>(MAP_DIR <span class="op">/</span> <span class="ss">f"PfPR_2-10_Africa_</span><span class="sc">{</span>yr<span class="sc">}</span><span class="ss">.tif"</span>) <span class="im">as</span> src:</span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>        arr <span class="op">=</span> src.read(<span class="dv">1</span>).astype(<span class="st">"float32"</span>)</span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>        nod <span class="op">=</span> src.nodata</span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> nod <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>            arr[arr <span class="op">==</span> nod] <span class="op">=</span> np.nan</span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>        arr[arr <span class="op">&lt;</span> <span class="dv">0</span>] <span class="op">=</span> np.nan</span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>        cl.loc[idx, <span class="st">"pfpr"</span>] <span class="op">=</span> zonal_mean(buf.loc[idx], arr, src.transform, np.nan) <span class="op">*</span> <span class="dv">100</span></span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  malaria </span><span class="sc">{</span>yr<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span><span class="bu">len</span>(idx)<span class="sc">:,}</span><span class="ss"> clusters"</span>)</span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- rainfall (CHIRPS monthly) --------------------------------------------</span></span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>lon0, lat0, lon1, lat1 <span class="op">=</span> AFRICA_BBOX</span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>YEARS <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1981</span>, <span class="dv">2022</span>)</span>
-<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>BASE <span class="op">=</span> (<span class="dv">1981</span>, <span class="dv">2010</span>)</span>
-<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> open_year(y):</span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>    ds <span class="op">=</span> xr.open_dataset(CHIRPS_MONTHLY <span class="op">/</span> <span class="ss">f"CHIRPS_monthly_</span><span class="sc">{</span>y<span class="sc">}</span><span class="ss">.nc"</span>)</span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ds[<span class="st">"precip"</span>].sel(longitude<span class="op">=</span><span class="bu">slice</span>(lon0, lon1), latitude<span class="op">=</span><span class="bu">slice</span>(lat1, lat0))</span>
-<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="co"># load all years once (Africa subset), as a dict of (12, ny, nx) float32 arrays</span></span>
-<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Loading CHIRPS (Africa subset)..."</span>)</span>
-<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>rain <span class="op">=</span> {}</span>
-<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(YEARS.start <span class="op">-</span> <span class="dv">1</span>, YEARS.stop):</span>
-<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
-<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>        da <span class="op">=</span> open_year(y)</span>
-<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">FileNotFoundError</span>:</span>
-<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
-<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>    rain[y] <span class="op">=</span> da.values.astype(<span class="st">"float32"</span>)</span>
-<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>    lats, lons <span class="op">=</span> da.latitude.values, da.longitude.values</span>
-<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="bu">abs</span>(<span class="bu">float</span>(lons[<span class="dv">1</span>] <span class="op">-</span> lons[<span class="dv">0</span>]))</span>
-<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>transform <span class="op">=</span> from_origin(lons.<span class="bu">min</span>() <span class="op">-</span> res <span class="op">/</span> <span class="dv">2</span>, lats.<span class="bu">max</span>() <span class="op">+</span> res <span class="op">/</span> <span class="dv">2</span>, res, res)</span>
-<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> three_month_total(y, end_month):</span>
-<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Rain total for the 3 months ending in end_month (1-12) of year y."""</span></span>
-<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>    tot <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</span>
-<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>        m, yy <span class="op">=</span> end_month <span class="op">-</span> k, y</span>
-<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> m <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
-<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>            m, yy <span class="op">=</span> m <span class="op">+</span> <span class="dv">12</span>, y <span class="op">-</span> <span class="dv">1</span></span>
-<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> yy <span class="kw">not</span> <span class="kw">in</span> rain:</span>
-<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">None</span></span>
-<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>        tot <span class="op">=</span> tot <span class="op">+</span> rain[yy][m <span class="op">-</span> <span class="dv">1</span>]</span>
-<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> tot</span>
-<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a><span class="co"># long-term mean annual rainfall (1981-2010)</span></span>
-<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>annual <span class="op">=</span> np.nanmean([rain[y].<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>) <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(BASE[<span class="dv">0</span>], BASE[<span class="dv">1</span>] <span class="op">+</span> <span class="dv">1</span>)], axis<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>cl[<span class="st">"rain_annual_mm"</span>] <span class="op">=</span> zonal_mean(buf, annual, transform, np.nan)</span>
-<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a><span class="co"># 3-month anomaly: window ends the month BEFORE the interview month</span></span>
-<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>end <span class="op">=</span> cl.int_month <span class="op">-</span> <span class="dv">1</span></span>
-<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>end_year <span class="op">=</span> np.where(end <span class="op">==</span> <span class="dv">0</span>, cl.int_year <span class="op">-</span> <span class="dv">1</span>, cl.int_year)</span>
-<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>end <span class="op">=</span> np.where(end <span class="op">==</span> <span class="dv">0</span>, <span class="dv">12</span>, end)</span>
-<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>cl[<span class="st">"rain_end_month"</span>], cl[<span class="st">"rain_end_year"</span>] <span class="op">=</span> end, end_year</span>
-<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>cl[<span class="st">"rain_3mo_mm"</span>] <span class="op">=</span> np.nan</span>
-<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>cl[<span class="st">"rain_3mo_z"</span>] <span class="op">=</span> np.nan</span>
-<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> e <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">13</span>):</span>
-<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>    base <span class="op">=</span> [three_month_total(y, e) <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(BASE[<span class="dv">0</span>], BASE[<span class="dv">1</span>] <span class="op">+</span> <span class="dv">1</span>)]</span>
-<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>    base <span class="op">=</span> np.stack([b <span class="cf">for</span> b <span class="kw">in</span> base <span class="cf">if</span> b <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>])     <span class="co"># 1981 Jan/Feb windows need 1980 (no data)</span></span>
-<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a>    mu, sd <span class="op">=</span> base.mean(axis<span class="op">=</span><span class="dv">0</span>), base.std(axis<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a>    sd[sd <span class="op">&lt;</span> <span class="dv">1</span>] <span class="op">=</span> np.nan                        <span class="co"># near-zero variability (desert) -&gt; undefined</span></span>
-<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">sorted</span>(<span class="bu">set</span>(end_year[end <span class="op">==</span> e])):</span>
-<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a>        idx <span class="op">=</span> cl.index[(end <span class="op">==</span> e) <span class="op">&amp;</span> (end_year <span class="op">==</span> y)]</span>
-<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a>        tot <span class="op">=</span> three_month_total(y, e)</span>
-<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>        z <span class="op">=</span> np.clip((tot <span class="op">-</span> mu) <span class="op">/</span> sd, <span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>)</span>
-<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>        cl.loc[idx, <span class="st">"rain_3mo_mm"</span>] <span class="op">=</span> zonal_mean(buf.loc[idx], tot, transform, np.nan)</span>
-<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a>        cl.loc[idx, <span class="st">"rain_3mo_z"</span>] <span class="op">=</span> zonal_mean(buf.loc[idx], z, transform, np.nan)</span>
-<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  rainfall window ending month </span><span class="sc">{</span>e<span class="sc">:2d}</span><span class="ss"> done"</span>)</span>
-<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a>cl.to_parquet(PRIVATE <span class="op">/</span> <span class="st">"clusters_features.parquet"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(cl[[<span class="st">"pfpr"</span>, <span class="st">"rain_annual_mm"</span>, <span class="st">"rain_3mo_mm"</span>, <span class="st">"rain_3mo_z"</span>]].describe().<span class="bu">round</span>(<span class="dv">2</span>).to_string())</span>
-<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Missing:"</span>, cl[[<span class="st">"pfpr"</span>, <span class="st">"rain_3mo_z"</span>]].isna().<span class="bu">sum</span>().to_dict())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Show the code: <code>analysis/03_download_boundaries.py</code> (geoBoundaries API)
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-3" class="callout-3-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">"""Step 3. Download admin-1 (region/province) boundaries from the geoBoundaries API.</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">Source: geoBoundaries (www.geoboundaries.org), open licence, CC BY 4.0.</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">Output: data/public/admin1.geojson  (public data, safe to commit)</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> urllib.request</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> config <span class="im">import</span> PUBLIC, PRIVATE, SSA, ISO3</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>name_to_code <span class="op">=</span> {v: k <span class="cf">for</span> k, v <span class="kw">in</span> SSA.items()}</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>countries <span class="op">=</span> pd.read_parquet(PRIVATE <span class="op">/</span> <span class="st">"clusters.parquet"</span>, columns<span class="op">=</span>[<span class="st">"country"</span>]).country.unique()</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_json(url, tries<span class="op">=</span><span class="dv">4</span>):</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(tries):</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>            <span class="cf">with</span> urllib.request.urlopen(url, timeout<span class="op">=</span><span class="dv">120</span>) <span class="im">as</span> r:</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> json.loads(r.read())</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"    retry </span><span class="sc">{</span>i <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>            time.sleep(<span class="dv">2</span> <span class="op">**</span> i)</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">RuntimeError</span>(url)</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>frames <span class="op">=</span> []</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> c <span class="kw">in</span> <span class="bu">sorted</span>(countries):</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    iso <span class="op">=</span> ISO3[name_to_code[c]]</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    meta <span class="op">=</span> get_json(<span class="ss">f"https://www.geoboundaries.org/api/current/gbOpen/</span><span class="sc">{</span>iso<span class="sc">}</span><span class="ss">/ADM1/"</span>)</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    g <span class="op">=</span> gpd.read_file(meta[<span class="st">"simplifiedGeometryGeoJSON"</span>])</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    g <span class="op">=</span> g[[<span class="st">"shapeName"</span>, <span class="st">"geometry"</span>]].rename(columns<span class="op">=</span>{<span class="st">"shapeName"</span>: <span class="st">"region"</span>})</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    g[<span class="st">"country"</span>], g[<span class="st">"iso3"</span>] <span class="op">=</span> c, iso</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    frames.append(g)</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>c<span class="sc">:15s}</span><span class="ss"> </span><span class="sc">{</span>iso<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span><span class="bu">len</span>(g)<span class="sc">}</span><span class="ss"> regions"</span>)</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>adm <span class="op">=</span> pd.concat(frames, ignore_index<span class="op">=</span><span class="va">True</span>).to_crs(<span class="st">"EPSG:4326"</span>)</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>adm[<span class="st">"region_id"</span>] <span class="op">=</span> adm.iso3 <span class="op">+</span> <span class="st">"_"</span> <span class="op">+</span> adm.groupby(<span class="st">"iso3"</span>).cumcount().astype(<span class="bu">str</span>).<span class="bu">str</span>.zfill(<span class="dv">3</span>)</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>adm[<span class="st">"geometry"</span>] <span class="op">=</span> adm.geometry.make_valid().simplify(<span class="fl">0.01</span>, preserve_topology<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>adm[[<span class="st">"region_id"</span>, <span class="st">"region"</span>, <span class="st">"country"</span>, <span class="st">"iso3"</span>, <span class="st">"geometry"</span>]].to_file(PUBLIC <span class="op">/</span> <span class="st">"admin1.geojson"</span>, driver<span class="op">=</span><span class="st">"GeoJSON"</span>)</span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Saved </span><span class="sc">{</span><span class="bu">len</span>(adm)<span class="sc">}</span><span class="ss"> regions"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<p>📓 <strong><a href="./analysis/02_raster_features.html">Notebook 2 · Raster analysis</a></strong> shows the full code and outputs.</p>
+<p>📓 <strong><a href="./analysis/03_download_boundaries.html">Notebook 3 · Region boundaries</a></strong> shows the full code and outputs.</p>
 </section>
 <section id="step-3-clustering-k-means-profiles-and-dbscan-hotspots" class="level2">
 <h2 class="anchored" data-anchor-id="step-3-clustering-k-means-profiles-and-dbscan-hotspots">Step 3 · Clustering: k-means profiles and DBSCAN hotspots</h2>
@@ -634,132 +411,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>k-means</strong> (<code>scikit-learn</code>) on the three <em>standardized</em> measures. Choosing k: the elbow plot and the silhouette score both point to <strong>k = 5</strong>.</li>
 <li><strong>DBSCAN</strong> on the latitude/longitude of the “all three high” clusters, with <strong>haversine</strong> (great-circle) distance. Settings: radius 50 km, at least 15 clusters. A sensitivity check covers radii of 25–100 km.</li>
 </ul>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Show the code: <code>analysis/04_profiles_hotspots.py</code> (scikit-learn KMeans, DBSCAN)
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-4" class="callout-4-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">"""Step 4. Cluster profiles (k-means) and spatial hotspots (DBSCAN).</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">  * k-means on three standardized measures: anemia, open defecation, malaria.</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Number of profiles chosen with the elbow method (and silhouette as a check).</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">  * DBSCAN on the locations of clusters in the "all three high" profile,</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">    using great-circle (haversine) distance, to find spatial hotspots.</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">Input : data/private/clusters_features.parquet</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">Output: data/private/clusters_profiles.parquet          (private)</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">        data/public/kmeans_elbow.csv, kmeans_profiles.csv, dbscan_summary.csv (public)</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> KMeans, DBSCAN</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> silhouette_score</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> config <span class="im">import</span> PRIVATE, PUBLIC</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>K <span class="op">=</span> <span class="dv">5</span>                     <span class="co"># elbow bends around 4-5; silhouette is highest at 5 -&gt; 5 profiles</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>EPS_KM, MIN_SAMPLES <span class="op">=</span> <span class="dv">50</span>, <span class="dv">15</span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>MEASURES <span class="op">=</span> [<span class="st">"anemia_pct"</span>, <span class="st">"od_pct"</span>, <span class="st">"pfpr"</span>]</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>cl <span class="op">=</span> pd.read_parquet(PRIVATE <span class="op">/</span> <span class="st">"clusters_features.parquet"</span>)</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co"># MAP leaves malaria-free areas (e.g. Lesotho, Eswatini, highlands) blank -&gt; treat as 0 % prevalence</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>cl[<span class="st">"pfpr_missing"</span>] <span class="op">=</span> cl.pfpr.isna().astype(<span class="bu">int</span>)</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>cl[<span class="st">"pfpr"</span>] <span class="op">=</span> cl.pfpr.fillna(<span class="dv">0</span>)</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>cl <span class="op">=</span> cl.dropna(subset<span class="op">=</span>MEASURES).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> StandardScaler().fit_transform(cl[MEASURES])</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- elbow ------------------------------------------------------------------</span></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>sample <span class="op">=</span> rng.choice(<span class="bu">len</span>(X), size<span class="op">=</span><span class="bu">min</span>(<span class="dv">8000</span>, <span class="bu">len</span>(X)), replace<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> []</span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">11</span>):</span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    km <span class="op">=</span> KMeans(n_clusters<span class="op">=</span>k, n_init<span class="op">=</span><span class="dv">10</span>, random_state<span class="op">=</span><span class="dv">0</span>).fit(X)</span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    sil <span class="op">=</span> silhouette_score(X[sample], km.labels_[sample]) <span class="cf">if</span> k <span class="op">&gt;</span> <span class="dv">1</span> <span class="cf">else</span> np.nan</span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    rows.append({<span class="st">"k"</span>: k, <span class="st">"inertia"</span>: km.inertia_, <span class="st">"silhouette"</span>: sil})</span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>elbow <span class="op">=</span> pd.DataFrame(rows)</span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>elbow.to_csv(PUBLIC <span class="op">/</span> <span class="st">"kmeans_elbow.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(elbow.<span class="bu">round</span>(<span class="dv">3</span>).to_string(index<span class="op">=</span><span class="va">False</span>))</span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- final k-means ------------------------------------------------------------</span></span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>km <span class="op">=</span> KMeans(n_clusters<span class="op">=</span>K, n_init<span class="op">=</span><span class="dv">25</span>, random_state<span class="op">=</span><span class="dv">0</span>).fit(X)</span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>cl[<span class="st">"profile_raw"</span>] <span class="op">=</span> km.labels_</span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>cent <span class="op">=</span> cl.groupby(<span class="st">"profile_raw"</span>)[MEASURES].mean()</span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> (cent <span class="op">-</span> cl[MEASURES].mean()) <span class="op">/</span> cl[MEASURES].std()</span>
-<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> name(row):</span>
-<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>    hi <span class="op">=</span> [lbl <span class="cf">for</span> lbl, col <span class="kw">in</span> [(<span class="st">"anemia"</span>, <span class="st">"anemia_pct"</span>), (<span class="st">"open defecation"</span>, <span class="st">"od_pct"</span>), (<span class="st">"malaria"</span>, <span class="st">"pfpr"</span>)]</span>
-<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>          <span class="cf">if</span> row[col] <span class="op">&gt;</span> <span class="fl">0.25</span>]</span>
-<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(hi) <span class="op">==</span> <span class="dv">3</span>:</span>
-<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"All three high"</span></span>
-<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> hi:</span>
-<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"All three low"</span></span>
-<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">"High "</span> <span class="op">+</span> <span class="st">" + "</span>.join(hi)</span>
-<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>names <span class="op">=</span> z.<span class="bu">apply</span>(name, axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a><span class="co"># make names unique if two profiles share a label</span></span>
-<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n, idx <span class="kw">in</span> names.groupby(names).groups.items():</span>
-<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(idx) <span class="op">&gt;</span> <span class="dv">1</span>:</span>
-<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j, i <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">sorted</span>(idx, key<span class="op">=</span><span class="kw">lambda</span> i: <span class="op">-</span>z.loc[i].<span class="bu">sum</span>())):</span>
-<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>            names[i] <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>n<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span><span class="st">'stronger'</span> <span class="cf">if</span> j <span class="op">==</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">'weaker'</span><span class="sc">}</span><span class="ss">)"</span></span>
-<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>order <span class="op">=</span> z.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>).sort_values(ascending<span class="op">=</span><span class="va">False</span>).index          <span class="co"># 1 = highest burden</span></span>
-<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>pid <span class="op">=</span> {raw: i <span class="op">+</span> <span class="dv">1</span> <span class="cf">for</span> i, raw <span class="kw">in</span> <span class="bu">enumerate</span>(order)}</span>
-<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>cl[<span class="st">"profile"</span>] <span class="op">=</span> cl.profile_raw.<span class="bu">map</span>(pid)</span>
-<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>cl[<span class="st">"profile_name"</span>] <span class="op">=</span> cl.profile_raw.<span class="bu">map</span>(names)</span>
-<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>prof <span class="op">=</span> (cl.groupby([<span class="st">"profile"</span>, <span class="st">"profile_name"</span>])</span>
-<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>          .agg(n_clusters<span class="op">=</span>(<span class="st">"anemia_pct"</span>, <span class="st">"size"</span>), n_children<span class="op">=</span>(<span class="st">"n_children"</span>, <span class="st">"sum"</span>),</span>
-<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>               anemia_pct<span class="op">=</span>(<span class="st">"anemia_pct"</span>, <span class="st">"mean"</span>), od_pct<span class="op">=</span>(<span class="st">"od_pct"</span>, <span class="st">"mean"</span>), pfpr<span class="op">=</span>(<span class="st">"pfpr"</span>, <span class="st">"mean"</span>),</span>
-<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>               rain_3mo_z<span class="op">=</span>(<span class="st">"rain_3mo_z"</span>, <span class="st">"mean"</span>), wealth<span class="op">=</span>(<span class="st">"wealth"</span>, <span class="st">"mean"</span>),</span>
-<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>               mom_secondary_pct<span class="op">=</span>(<span class="st">"mom_secondary_pct"</span>, <span class="st">"mean"</span>), urban_pct<span class="op">=</span>(<span class="st">"urban"</span>, <span class="st">"mean"</span>))</span>
-<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>          .reset_index())</span>
-<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a>prof[<span class="st">"urban_pct"</span>] <span class="op">*=</span> <span class="dv">100</span></span>
-<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>prof[<span class="st">"share_pct"</span>] <span class="op">=</span> <span class="dv">100</span> <span class="op">*</span> prof.n_clusters <span class="op">/</span> prof.n_clusters.<span class="bu">sum</span>()</span>
-<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>prof.<span class="bu">round</span>(<span class="dv">2</span>).to_csv(PUBLIC <span class="op">/</span> <span class="st">"kmeans_profiles.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(prof.<span class="bu">round</span>(<span class="dv">1</span>).to_string(index<span class="op">=</span><span class="va">False</span>))</span>
-<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- DBSCAN hotspots within the highest-burden profile -----------------------</span></span>
-<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>top <span class="op">=</span> cl.profile <span class="op">==</span> <span class="dv">1</span></span>
-<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>coords <span class="op">=</span> np.radians(cl.loc[top, [<span class="st">"lat"</span>, <span class="st">"lon"</span>]].to_numpy())</span>
-<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>db <span class="op">=</span> DBSCAN(eps<span class="op">=</span>EPS_KM <span class="op">/</span> <span class="fl">6371.0</span>, min_samples<span class="op">=</span>MIN_SAMPLES, metric<span class="op">=</span><span class="st">"haversine"</span>,</span>
-<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>            algorithm<span class="op">=</span><span class="st">"ball_tree"</span>).fit(coords)</span>
-<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>cl[<span class="st">"hotspot"</span>] <span class="op">=</span> <span class="op">-</span><span class="dv">1</span></span>
-<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>cl.loc[top, <span class="st">"hotspot"</span>] <span class="op">=</span> db.labels_</span>
-<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>cl[<span class="st">"in_hotspot"</span>] <span class="op">=</span> (cl.hotspot <span class="op">&gt;=</span> <span class="dv">0</span>).astype(<span class="bu">int</span>)</span>
-<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a>hs <span class="op">=</span> (cl[cl.hotspot <span class="op">&gt;=</span> <span class="dv">0</span>].groupby(<span class="st">"hotspot"</span>)</span>
-<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>        .agg(n_clusters<span class="op">=</span>(<span class="st">"lat"</span>, <span class="st">"size"</span>), countries<span class="op">=</span>(<span class="st">"country"</span>, <span class="kw">lambda</span> s: <span class="st">", "</span>.join(<span class="bu">sorted</span>(s.unique()))),</span>
-<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a>             anemia_pct<span class="op">=</span>(<span class="st">"anemia_pct"</span>, <span class="st">"mean"</span>), od_pct<span class="op">=</span>(<span class="st">"od_pct"</span>, <span class="st">"mean"</span>), pfpr<span class="op">=</span>(<span class="st">"pfpr"</span>, <span class="st">"mean"</span>))</span>
-<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a>        .sort_values(<span class="st">"n_clusters"</span>, ascending<span class="op">=</span><span class="va">False</span>).reset_index(drop<span class="op">=</span><span class="va">True</span>))</span>
-<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a>hs.index <span class="op">=</span> hs.index <span class="op">+</span> <span class="dv">1</span></span>
-<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a>hs.index.name <span class="op">=</span> <span class="st">"hotspot"</span></span>
-<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a>hs.<span class="bu">round</span>(<span class="dv">1</span>).to_csv(PUBLIC <span class="op">/</span> <span class="st">"dbscan_summary.csv"</span>)</span>
-<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">DBSCAN: </span><span class="sc">{</span>top<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,}</span><span class="ss"> clusters in profile 1 -&gt; </span><span class="sc">{</span><span class="bu">len</span>(hs)<span class="sc">}</span><span class="ss"> hotspots, "</span></span>
-<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"</span><span class="sc">{</span>cl<span class="sc">.</span>in_hotspot<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,}</span><span class="ss"> clusters in a hotspot, </span><span class="sc">{</span>(db.labels_ <span class="op">==</span> <span class="op">-</span><span class="dv">1</span>)<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,}</span><span class="ss"> scattered"</span>)</span>
-<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(hs.head(<span class="dv">15</span>).<span class="bu">round</span>(<span class="dv">1</span>).to_string())</span>
-<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- sensitivity: how do hotspots change with the search radius? -------------</span></span>
-<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a>sens <span class="op">=</span> []</span>
-<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> eps <span class="kw">in</span> (<span class="dv">25</span>, <span class="dv">50</span>, <span class="dv">75</span>, <span class="dv">100</span>):</span>
-<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a>    lab <span class="op">=</span> DBSCAN(eps<span class="op">=</span>eps <span class="op">/</span> <span class="fl">6371.0</span>, min_samples<span class="op">=</span>MIN_SAMPLES, metric<span class="op">=</span><span class="st">"haversine"</span>,</span>
-<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a>                 algorithm<span class="op">=</span><span class="st">"ball_tree"</span>).fit(coords).labels_</span>
-<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a>    cl[<span class="ss">f"hot_</span><span class="sc">{</span>eps<span class="sc">}</span><span class="ss">"</span>] <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a>    cl.loc[top, <span class="ss">f"hot_</span><span class="sc">{</span>eps<span class="sc">}</span><span class="ss">"</span>] <span class="op">=</span> (lab <span class="op">&gt;=</span> <span class="dv">0</span>).astype(<span class="bu">int</span>)</span>
-<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a>    sens.append({<span class="st">"eps_km"</span>: eps, <span class="st">"n_hotspots"</span>: <span class="bu">int</span>(lab.<span class="bu">max</span>() <span class="op">+</span> <span class="dv">1</span>), <span class="st">"clusters_in_hotspots"</span>: <span class="bu">int</span>((lab <span class="op">&gt;=</span> <span class="dv">0</span>).<span class="bu">sum</span>()),</span>
-<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"share_pct"</span>: <span class="bu">round</span>(<span class="dv">100</span> <span class="op">*</span> (lab <span class="op">&gt;=</span> <span class="dv">0</span>).mean(), <span class="dv">1</span>)})</span>
-<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(sens).to_csv(PUBLIC <span class="op">/</span> <span class="st">"dbscan_sensitivity.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.DataFrame(sens).to_string(index<span class="op">=</span><span class="va">False</span>))</span>
-<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a>cl.drop(columns<span class="op">=</span><span class="st">"profile_raw"</span>).to_parquet(PRIVATE <span class="op">/</span> <span class="st">"clusters_profiles.parquet"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<p>📓 <strong><a href="./analysis/04_profiles_hotspots.html">Notebook 4 · Profiles &amp; hotspots</a></strong> shows the full code and outputs.</p>
 </section>
 <section id="step-4-machine-learning-predicting-anemia" class="level2">
 <h2 class="anchored" data-anchor-id="step-4-machine-learning-predicting-anemia">Step 4 · Machine learning: predicting anemia</h2>
@@ -769,135 +421,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Spatial lag:</strong> the average anemia of the 10 nearest <em>training</em> clusters, found with a <code>BallTree</code> and haversine distance. Test clusters only “see” training neighbours, so no answers leak in.</li>
 <li><strong>Permutation importance</strong> shows which features matter. <strong>Out-of-fold predictions</strong> give every cluster a prediction from a model that never saw it, which feeds the error map.</li>
 </ul>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Show the code: <code>analysis/05_predict_anemia.py</code> (scikit-learn)
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-5" class="callout-5-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">"""Step 5. Predict cluster anemia prevalence: linear regression vs random forest.</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">  * Features: open defecation, malaria, rainfall anomaly, long-term rainfall,</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">    wealth, maternal education, urban, and a spatial lag (average anemia of the</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">    10 nearest *training* clusters, so the test set never leaks into features).</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">  * 80/20 train/test split, 5-fold cross-validation, grid search for the forest.</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">  * Out-of-fold predictions for every cluster -&gt; where does the model miss?</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">Input : data/private/clusters_profiles.parquet</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">Output: data/private/clusters_final.parquet               (private)</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">        data/public/model_scores.csv, feature_importance.csv (public)</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestRegressor</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.inspection <span class="im">import</span> permutation_importance</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_absolute_error, r2_score</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> GridSearchCV, KFold, train_test_split</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neighbors <span class="im">import</span> BallTree</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> make_pipeline</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> config <span class="im">import</span> PRIVATE, PUBLIC</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>BASE_FEATURES <span class="op">=</span> [<span class="st">"od_pct"</span>, <span class="st">"pfpr"</span>, <span class="st">"rain_3mo_z"</span>, <span class="st">"rain_annual_mm"</span>, <span class="st">"wealth"</span>,</span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"mom_secondary_pct"</span>, <span class="st">"urban"</span>]</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>LABELS <span class="op">=</span> {<span class="st">"od_pct"</span>: <span class="st">"Open defecation (%)"</span>, <span class="st">"pfpr"</span>: <span class="st">"Malaria prevalence (%)"</span>,</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>          <span class="st">"rain_3mo_z"</span>: <span class="st">"Rainfall anomaly, last 3 months"</span>, <span class="st">"rain_annual_mm"</span>: <span class="st">"Typical annual rainfall"</span>,</span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>          <span class="st">"wealth"</span>: <span class="st">"Household wealth"</span>, <span class="st">"mom_secondary_pct"</span>: <span class="st">"Mothers with secondary school (%)"</span>,</span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>          <span class="st">"urban"</span>: <span class="st">"Urban"</span>, <span class="st">"spatial_lag"</span>: <span class="st">"Anemia in nearby clusters"</span>}</span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>K_NEIGHBORS <span class="op">=</span> <span class="dv">10</span></span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>y_col <span class="op">=</span> <span class="st">"anemia_pct"</span></span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>cl <span class="op">=</span> pd.read_parquet(PRIVATE <span class="op">/</span> <span class="st">"clusters_profiles.parquet"</span>)</span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>cl <span class="op">=</span> cl.dropna(subset<span class="op">=</span>BASE_FEATURES <span class="op">+</span> [y_col]).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(cl)<span class="sc">:,}</span><span class="ss"> clusters with complete features"</span>)</span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> spatial_lag(train_idx, target_idx, k<span class="op">=</span>K_NEIGHBORS):</span>
-<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Mean anemia of the k nearest training clusters (excluding the cluster itself)."""</span></span>
-<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>    tr <span class="op">=</span> cl.loc[train_idx]</span>
-<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>    tree <span class="op">=</span> BallTree(np.radians(tr[[<span class="st">"lat"</span>, <span class="st">"lon"</span>]].to_numpy()), metric<span class="op">=</span><span class="st">"haversine"</span>)</span>
-<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>    dist, ind <span class="op">=</span> tree.query(np.radians(cl.loc[target_idx, [<span class="st">"lat"</span>, <span class="st">"lon"</span>]].to_numpy()), k<span class="op">=</span>k <span class="op">+</span> <span class="dv">1</span>)</span>
-<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>    tr_ids <span class="op">=</span> tr.index.to_numpy()[ind]                       <span class="co"># (n, k+1) training-cluster ids</span></span>
-<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>    vals <span class="op">=</span> tr[y_col].to_numpy()[ind]</span>
-<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>    self_hit <span class="op">=</span> tr_ids <span class="op">==</span> np.asarray(target_idx)[:, <span class="va">None</span>]</span>
-<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>    vals <span class="op">=</span> np.where(self_hit, np.nan, vals)</span>
-<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># keep the first k non-self neighbours</span></span>
-<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array([row[<span class="op">~</span>np.isnan(row)][:k].mean() <span class="cf">for</span> row <span class="kw">in</span> vals])</span>
-<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>FEATURES <span class="op">=</span> BASE_FEATURES <span class="op">+</span> [<span class="st">"spatial_lag"</span>]</span>
-<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_xy(train_idx, test_idx):</span>
-<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>    Xtr <span class="op">=</span> cl.loc[train_idx, BASE_FEATURES].copy()<span class="op">;</span> Xtr[<span class="st">"spatial_lag"</span>] <span class="op">=</span> spatial_lag(train_idx, train_idx)</span>
-<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>    Xte <span class="op">=</span> cl.loc[test_idx, BASE_FEATURES].copy()<span class="op">;</span>  Xte[<span class="st">"spatial_lag"</span>] <span class="op">=</span> spatial_lag(train_idx, test_idx)</span>
-<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Xtr, cl.loc[train_idx, y_col], Xte, cl.loc[test_idx, y_col]</span>
-<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>train_idx, test_idx <span class="op">=</span> train_test_split(cl.index, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
-<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>Xtr, ytr, Xte, yte <span class="op">=</span> make_xy(train_idx, test_idx)</span>
-<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>cv <span class="op">=</span> KFold(<span class="dv">5</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>grid <span class="op">=</span> GridSearchCV(</span>
-<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>    RandomForestRegressor(random_state<span class="op">=</span><span class="dv">0</span>, n_jobs<span class="op">=-</span><span class="dv">1</span>),</span>
-<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"n_estimators"</span>: [<span class="dv">300</span>], <span class="st">"max_depth"</span>: [<span class="dv">10</span>, <span class="dv">20</span>, <span class="va">None</span>], <span class="st">"min_samples_leaf"</span>: [<span class="dv">5</span>, <span class="dv">20</span>],</span>
-<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>     <span class="st">"max_features"</span>: [<span class="fl">0.33</span>, <span class="fl">0.66</span>]},</span>
-<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>    cv<span class="op">=</span>cv, scoring<span class="op">=</span><span class="st">"r2"</span>, n_jobs<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> cv_r2(make_model, feats):</span>
-<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Average R2 across the 5 cross-validation folds of the training set."""</span></span>
-<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.mean([r2_score(ytr.iloc[v], make_model().fit(Xtr[feats].iloc[t], ytr.iloc[t])</span>
-<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>                             .predict(Xtr[feats].iloc[v])) <span class="cf">for</span> t, v <span class="kw">in</span> cv.split(Xtr)])</span>
-<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>grid.fit(Xtr[FEATURES], ytr)                      <span class="co"># grid search with 5-fold CV</span></span>
-<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a>best <span class="op">=</span> {k: v <span class="cf">for</span> k, v <span class="kw">in</span> grid.best_params_.items()}</span>
-<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>make_linear <span class="op">=</span> <span class="kw">lambda</span>: make_pipeline(StandardScaler(), LinearRegression())</span>
-<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>make_rf <span class="op">=</span> <span class="kw">lambda</span>: RandomForestRegressor(random_state<span class="op">=</span><span class="dv">0</span>, n_jobs<span class="op">=-</span><span class="dv">1</span>, <span class="op">**</span>best)</span>
-<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> []</span>
-<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, make_model, feats <span class="kw">in</span> [(<span class="st">"Linear regression"</span>, make_linear, FEATURES),</span>
-<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a>                                (<span class="st">"Random forest"</span>, make_rf, FEATURES),</span>
-<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a>                                (<span class="st">"Random forest (no spatial lag)"</span>, make_rf, BASE_FEATURES)]:</span>
-<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a>    model <span class="op">=</span> make_model().fit(Xtr[feats], ytr)</span>
-<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a>    pred <span class="op">=</span> model.predict(Xte[feats])</span>
-<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a>    rows.append({<span class="st">"model"</span>: name, <span class="st">"cv_r2"</span>: cv_r2(make_model, feats), <span class="st">"test_r2"</span>: r2_score(yte, pred),</span>
-<span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"test_mae"</span>: mean_absolute_error(yte, pred)})</span>
-<span id="cb5-85"><a href="#cb5-85" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(rows[<span class="op">-</span><span class="dv">1</span>])</span>
-<span id="cb5-86"><a href="#cb5-86" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> name <span class="op">==</span> <span class="st">"Linear regression"</span>:</span>
-<span id="cb5-87"><a href="#cb5-87" aria-hidden="true" tabindex="-1"></a>        linear <span class="op">=</span> model</span>
-<span id="cb5-88"><a href="#cb5-88" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Best forest:"</span>, grid.best_params_)</span>
-<span id="cb5-89"><a href="#cb5-89" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> pd.DataFrame(rows)</span>
-<span id="cb5-90"><a href="#cb5-90" aria-hidden="true" tabindex="-1"></a>scores.<span class="bu">round</span>(<span class="dv">3</span>).to_csv(PUBLIC <span class="op">/</span> <span class="st">"model_scores.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb5-91"><a href="#cb5-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-92"><a href="#cb5-92" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- which factors matter? (permutation importance on the test set) ---------</span></span>
-<span id="cb5-93"><a href="#cb5-93" aria-hidden="true" tabindex="-1"></a>rf <span class="op">=</span> grid.best_estimator_</span>
-<span id="cb5-94"><a href="#cb5-94" aria-hidden="true" tabindex="-1"></a>imp <span class="op">=</span> permutation_importance(rf, Xte[FEATURES], yte, n_repeats<span class="op">=</span><span class="dv">10</span>, random_state<span class="op">=</span><span class="dv">0</span>, n_jobs<span class="op">=-</span><span class="dv">1</span>)</span>
-<span id="cb5-95"><a href="#cb5-95" aria-hidden="true" tabindex="-1"></a>lin_coef <span class="op">=</span> linear.named_steps[<span class="st">"linearregression"</span>].coef_</span>
-<span id="cb5-96"><a href="#cb5-96" aria-hidden="true" tabindex="-1"></a>fi <span class="op">=</span> pd.DataFrame({<span class="st">"feature"</span>: FEATURES, <span class="st">"label"</span>: [LABELS[f] <span class="cf">for</span> f <span class="kw">in</span> FEATURES],</span>
-<span id="cb5-97"><a href="#cb5-97" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"rf_importance"</span>: imp.importances_mean, <span class="st">"rf_importance_sd"</span>: imp.importances_std,</span>
-<span id="cb5-98"><a href="#cb5-98" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"linear_std_coef"</span>: lin_coef})</span>
-<span id="cb5-99"><a href="#cb5-99" aria-hidden="true" tabindex="-1"></a>fi.sort_values(<span class="st">"rf_importance"</span>, ascending<span class="op">=</span><span class="va">False</span>).<span class="bu">round</span>(<span class="dv">4</span>).to_csv(PUBLIC <span class="op">/</span> <span class="st">"feature_importance.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb5-100"><a href="#cb5-100" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(fi.sort_values(<span class="st">"rf_importance"</span>, ascending<span class="op">=</span><span class="va">False</span>).<span class="bu">round</span>(<span class="dv">3</span>).to_string(index<span class="op">=</span><span class="va">False</span>))</span>
-<span id="cb5-101"><a href="#cb5-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-102"><a href="#cb5-102" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- out-of-fold predictions for every cluster (for the error map) ----------</span></span>
-<span id="cb5-103"><a href="#cb5-103" aria-hidden="true" tabindex="-1"></a>cl[<span class="st">"pred_rf"</span>] <span class="op">=</span> np.nan</span>
-<span id="cb5-104"><a href="#cb5-104" aria-hidden="true" tabindex="-1"></a>cl[<span class="st">"pred_linear"</span>] <span class="op">=</span> np.nan</span>
-<span id="cb5-105"><a href="#cb5-105" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> t, v <span class="kw">in</span> KFold(<span class="dv">5</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">1</span>).split(cl):</span>
-<span id="cb5-106"><a href="#cb5-106" aria-hidden="true" tabindex="-1"></a>    Xa, ya, Xb, _ <span class="op">=</span> make_xy(cl.index[t], cl.index[v])</span>
-<span id="cb5-107"><a href="#cb5-107" aria-hidden="true" tabindex="-1"></a>    cl.loc[cl.index[v], <span class="st">"pred_rf"</span>] <span class="op">=</span> make_rf().fit(Xa, ya).predict(Xb)</span>
-<span id="cb5-108"><a href="#cb5-108" aria-hidden="true" tabindex="-1"></a>    cl.loc[cl.index[v], <span class="st">"pred_linear"</span>] <span class="op">=</span> make_linear().fit(Xa, ya).predict(Xb)</span>
-<span id="cb5-109"><a href="#cb5-109" aria-hidden="true" tabindex="-1"></a>cl[<span class="st">"resid_rf"</span>] <span class="op">=</span> cl[y_col] <span class="op">-</span> cl.pred_rf             <span class="co"># + = model under-predicts anemia</span></span>
-<span id="cb5-110"><a href="#cb5-110" aria-hidden="true" tabindex="-1"></a>cl[<span class="st">"abs_err_rf"</span>] <span class="op">=</span> cl.resid_rf.<span class="bu">abs</span>()</span>
-<span id="cb5-111"><a href="#cb5-111" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Out-of-fold R2 (rf / linear):"</span>, <span class="bu">round</span>(r2_score(cl[y_col], cl.pred_rf), <span class="dv">3</span>),</span>
-<span id="cb5-112"><a href="#cb5-112" aria-hidden="true" tabindex="-1"></a>      <span class="bu">round</span>(r2_score(cl[y_col], cl.pred_linear), <span class="dv">3</span>))</span>
-<span id="cb5-113"><a href="#cb5-113" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-114"><a href="#cb5-114" aria-hidden="true" tabindex="-1"></a>cl.to_parquet(PRIVATE <span class="op">/</span> <span class="st">"clusters_final.parquet"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<p>📓 <strong><a href="./analysis/05_predict_anemia.html">Notebook 5 · Predicting anemia</a></strong> shows the full code and outputs.</p>
 </section>
 <section id="step-5-privacy-safe-aggregation-and-the-website" class="level2">
 <h2 class="anchored" data-anchor-id="step-5-privacy-safe-aggregation-and-the-website">Step 5 · Privacy-safe aggregation and the website</h2>
@@ -909,163 +433,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Malaria and rainfall rasters</strong> are open data and are shown in full.</li>
 </ul>
 </div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Show the code: <code>analysis/06_public_outputs.py</code> (h3, geopandas)
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">"""Step 6. Aggregate private cluster results into PUBLIC, non-identifying outputs.</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">DHS forbids sharing cluster GPS points, so everything published is aggregated:</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">  * hexagons (H3 resolution 4, ~23 km edge, ~1,770 km2), hidden if &lt; 3 clusters</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">  * admin-1 regions, hidden if &lt; 5 clusters</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">  * open raster layers (MAP malaria, CHIRPS rainfall) as map images</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">Output (data/public/): hexes.geojson, regions.geojson, profiles_by_country.csv,</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">                       raster_*.png + raster_bounds.json, sample_summary.json</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> h3</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xarray <span class="im">as</span> xr</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.image</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> cm, colors</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.geometry <span class="im">import</span> Polygon</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> config <span class="im">import</span> PRIVATE, PUBLIC, MAP_DIR, CHIRPS_MONTHLY, AFRICA_BBOX</span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>H3_RES, MIN_HEX, MIN_REGION <span class="op">=</span> <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">5</span></span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>cl <span class="op">=</span> pd.read_parquet(PRIVATE <span class="op">/</span> <span class="st">"clusters_final.parquet"</span>)</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>allc <span class="op">=</span> pd.read_parquet(PRIVATE <span class="op">/</span> <span class="st">"clusters_profiles.parquet"</span>)      <span class="co"># includes clusters w/o all model features</span></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>allc <span class="op">=</span> allc.merge(cl[[<span class="st">"idhspsu"</span>, <span class="st">"pred_rf"</span>, <span class="st">"resid_rf"</span>, <span class="st">"abs_err_rf"</span>]], on<span class="op">=</span><span class="st">"idhspsu"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>n_prof <span class="op">=</span> allc.profile.<span class="bu">max</span>()</span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> summarise(g):</span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> g.agg(n_clusters<span class="op">=</span>(<span class="st">"idhspsu"</span>, <span class="st">"size"</span>), n_children<span class="op">=</span>(<span class="st">"n_children"</span>, <span class="st">"sum"</span>),</span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>                anemia_pct<span class="op">=</span>(<span class="st">"anemia_pct"</span>, <span class="st">"mean"</span>), modsev_anemia_pct<span class="op">=</span>(<span class="st">"modsev_anemia_pct"</span>, <span class="st">"mean"</span>),</span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>                od_pct<span class="op">=</span>(<span class="st">"od_pct"</span>, <span class="st">"mean"</span>), pfpr<span class="op">=</span>(<span class="st">"pfpr"</span>, <span class="st">"mean"</span>),</span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>                rain_3mo_z<span class="op">=</span>(<span class="st">"rain_3mo_z"</span>, <span class="st">"mean"</span>), rain_annual_mm<span class="op">=</span>(<span class="st">"rain_annual_mm"</span>, <span class="st">"mean"</span>),</span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>                wealth<span class="op">=</span>(<span class="st">"wealth"</span>, <span class="st">"mean"</span>), mom_secondary_pct<span class="op">=</span>(<span class="st">"mom_secondary_pct"</span>, <span class="st">"mean"</span>),</span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>                urban_pct<span class="op">=</span>(<span class="st">"urban"</span>, <span class="st">"mean"</span>), in_hotspot_pct<span class="op">=</span>(<span class="st">"in_hotspot"</span>, <span class="st">"mean"</span>),</span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>                pred_anemia_pct<span class="op">=</span>(<span class="st">"pred_rf"</span>, <span class="st">"mean"</span>), resid<span class="op">=</span>(<span class="st">"resid_rf"</span>, <span class="st">"mean"</span>), abs_err<span class="op">=</span>(<span class="st">"abs_err_rf"</span>, <span class="st">"mean"</span>),</span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>                year_min<span class="op">=</span>(<span class="st">"int_year"</span>, <span class="st">"min"</span>), year_max<span class="op">=</span>(<span class="st">"int_year"</span>, <span class="st">"max"</span>),</span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>                hot_25<span class="op">=</span>(<span class="st">"hot_25"</span>, <span class="st">"mean"</span>), hot_50<span class="op">=</span>(<span class="st">"hot_50"</span>, <span class="st">"mean"</span>), hot_75<span class="op">=</span>(<span class="st">"hot_75"</span>, <span class="st">"mean"</span>),</span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>                hot_100<span class="op">=</span>(<span class="st">"hot_100"</span>, <span class="st">"mean"</span>),</span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>                country<span class="op">=</span>(<span class="st">"country"</span>, <span class="kw">lambda</span> s: s.mode().iat[<span class="dv">0</span>]))</span>
-<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> e <span class="kw">in</span> (<span class="dv">25</span>, <span class="dv">50</span>, <span class="dv">75</span>, <span class="dv">100</span>):</span>
-<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>        out[<span class="ss">f"hot_</span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>] <span class="op">*=</span> <span class="dv">100</span></span>
-<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>    out[<span class="st">"urban_pct"</span>] <span class="op">*=</span> <span class="dv">100</span></span>
-<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>    out[<span class="st">"in_hotspot_pct"</span>] <span class="op">*=</span> <span class="dv">100</span></span>
-<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>    shares <span class="op">=</span> pd.crosstab(g.obj[g.keys] <span class="cf">if</span> <span class="bu">isinstance</span>(g.keys, <span class="bu">str</span>) <span class="cf">else</span> g.obj[g.keys[<span class="dv">0</span>]],</span>
-<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>                         g.obj[<span class="st">"profile"</span>], normalize<span class="op">=</span><span class="st">"index"</span>) <span class="op">*</span> <span class="dv">100</span></span>
-<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>    shares <span class="op">=</span> shares.reindex(columns<span class="op">=</span><span class="bu">range</span>(<span class="dv">1</span>, n_prof <span class="op">+</span> <span class="dv">1</span>), fill_value<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>    shares.columns <span class="op">=</span> [<span class="ss">f"profile</span><span class="sc">{</span>p<span class="sc">}</span><span class="ss">_pct"</span> <span class="cf">for</span> p <span class="kw">in</span> shares.columns]</span>
-<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> out.join(shares)</span>
-<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>    out[<span class="st">"profile"</span>] <span class="op">=</span> shares.to_numpy().argmax(axis<span class="op">=</span><span class="dv">1</span>) <span class="op">+</span> <span class="dv">1</span>          <span class="co"># most common profile</span></span>
-<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>    names <span class="op">=</span> allc.drop_duplicates(<span class="st">"profile"</span>).set_index(<span class="st">"profile"</span>).profile_name</span>
-<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>    out[<span class="st">"profile_name"</span>] <span class="op">=</span> out.profile.<span class="bu">map</span>(names)</span>
-<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>    <span class="co"># dominant DBSCAN hotspot id (0 = none)</span></span>
-<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>    hs <span class="op">=</span> g.obj[g.obj.hotspot <span class="op">&gt;=</span> <span class="dv">0</span>].groupby(g.keys).hotspot.agg(<span class="kw">lambda</span> s: s.mode().iat[<span class="dv">0</span>] <span class="op">+</span> <span class="dv">1</span>)</span>
-<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>    out[<span class="st">"hotspot_id"</span>] <span class="op">=</span> hs.reindex(out.index).fillna(<span class="dv">0</span>).astype(<span class="bu">int</span>)</span>
-<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> out</span>
-<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- hexagons ------------------------------------------------------------------</span></span>
-<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>allc[<span class="st">"hex"</span>] <span class="op">=</span> [h3.latlng_to_cell(la, lo, H3_RES) <span class="cf">for</span> la, lo <span class="kw">in</span> <span class="bu">zip</span>(allc.lat, allc.lon)]</span>
-<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>hx <span class="op">=</span> summarise(allc.groupby(<span class="st">"hex"</span>))</span>
-<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>hx <span class="op">=</span> hx[hx.n_clusters <span class="op">&gt;=</span> MIN_HEX].reset_index()</span>
-<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>hx[<span class="st">"geometry"</span>] <span class="op">=</span> [Polygon([(lo, la) <span class="cf">for</span> la, lo <span class="kw">in</span> h3.cell_to_boundary(h)]) <span class="cf">for</span> h <span class="kw">in</span> hx.<span class="bu">hex</span>]</span>
-<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>hx <span class="op">=</span> gpd.GeoDataFrame(hx, crs<span class="op">=</span><span class="st">"EPSG:4326"</span>).<span class="bu">round</span>(<span class="dv">2</span>)</span>
-<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>hx[<span class="st">"hex"</span>] <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(hx) <span class="op">+</span> <span class="dv">1</span>)                                   <span class="co"># drop the real H3 id</span></span>
-<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>hx.to_file(PUBLIC <span class="op">/</span> <span class="st">"hexes.geojson"</span>, driver<span class="op">=</span><span class="st">"GeoJSON"</span>)</span>
-<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Hexes: </span><span class="sc">{</span><span class="bu">len</span>(hx)<span class="sc">:,}</span><span class="ss"> shown (&gt;= </span><span class="sc">{</span>MIN_HEX<span class="sc">}</span><span class="ss"> clusters), covering </span><span class="sc">{</span>hx<span class="sc">.</span>n_clusters<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,}</span><span class="ss"> of </span><span class="sc">{</span><span class="bu">len</span>(allc)<span class="sc">:,}</span><span class="ss"> clusters"</span>)</span>
-<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- admin-1 regions -----------------------------------------------------------</span></span>
-<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>adm <span class="op">=</span> gpd.read_file(PUBLIC <span class="op">/</span> <span class="st">"admin1.geojson"</span>)</span>
-<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>pts <span class="op">=</span> gpd.GeoDataFrame(allc, geometry<span class="op">=</span>gpd.points_from_xy(allc.lon, allc.lat), crs<span class="op">=</span><span class="st">"EPSG:4326"</span>)</span>
-<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>pts <span class="op">=</span> gpd.sjoin(pts, adm[[<span class="st">"region_id"</span>, <span class="st">"geometry"</span>]], how<span class="op">=</span><span class="st">"left"</span>, predicate<span class="op">=</span><span class="st">"within"</span>)</span>
-<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a><span class="co"># clusters falling just outside a polygon (coast, displacement) -&gt; nearest region</span></span>
-<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>miss <span class="op">=</span> pts.region_id.isna()</span>
-<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> miss.<span class="bu">any</span>():</span>
-<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>    near <span class="op">=</span> gpd.sjoin_nearest(pts.loc[miss, [<span class="st">"geometry"</span>]].to_crs(<span class="dv">3857</span>),</span>
-<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>                             adm[[<span class="st">"region_id"</span>, <span class="st">"geometry"</span>]].to_crs(<span class="dv">3857</span>), how<span class="op">=</span><span class="st">"left"</span>)</span>
-<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>    pts.loc[miss, <span class="st">"region_id"</span>] <span class="op">=</span> near.groupby(level<span class="op">=</span><span class="dv">0</span>).region_id.first()</span>
-<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a>pts <span class="op">=</span> pd.DataFrame(pts.drop(columns<span class="op">=</span>[<span class="st">"geometry"</span>, <span class="st">"index_right"</span>]))</span>
-<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a>rg <span class="op">=</span> summarise(pts.groupby(<span class="st">"region_id"</span>)).drop(columns<span class="op">=</span><span class="st">"country"</span>)</span>
-<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a>rg <span class="op">=</span> rg[rg.n_clusters <span class="op">&gt;=</span> MIN_REGION]</span>
-<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a>regions <span class="op">=</span> adm.merge(rg.reset_index(), on<span class="op">=</span><span class="st">"region_id"</span>, how<span class="op">=</span><span class="st">"left"</span>).<span class="bu">round</span>(<span class="dv">2</span>)</span>
-<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a>regions.to_file(PUBLIC <span class="op">/</span> <span class="st">"regions.geojson"</span>, driver<span class="op">=</span><span class="st">"GeoJSON"</span>)</span>
-<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Regions: </span><span class="sc">{</span>rg<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">}</span><span class="ss"> of </span><span class="sc">{</span><span class="bu">len</span>(adm)<span class="sc">}</span><span class="ss"> with &gt;= </span><span class="sc">{</span>MIN_REGION<span class="sc">}</span><span class="ss"> clusters"</span>)</span>
-<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- by country ------------------------------------------------------------------</span></span>
-<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a>bc <span class="op">=</span> (pd.crosstab(allc.country, allc.profile_name, normalize<span class="op">=</span><span class="st">"index"</span>) <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">1</span>)</span>
-<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>bc[<span class="st">"n_clusters"</span>] <span class="op">=</span> allc.groupby(<span class="st">"country"</span>).size()</span>
-<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a>bc[<span class="st">"anemia_pct"</span>] <span class="op">=</span> allc.groupby(<span class="st">"country"</span>).anemia_pct.mean().<span class="bu">round</span>(<span class="dv">1</span>)</span>
-<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>bc.reset_index().to_csv(PUBLIC <span class="op">/</span> <span class="st">"profiles_by_country.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- open raster layers as images (for map overlays) -----------------------------</span></span>
-<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> to_png(arr, path, cmap, vmin, vmax):</span>
-<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>    rgba <span class="op">=</span> matplotlib.colormaps[cmap](colors.Normalize(vmin, vmax)(arr))</span>
-<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>    rgba[..., <span class="dv">3</span>] <span class="op">=</span> np.where(np.isnan(arr), <span class="dv">0</span>, <span class="fl">0.75</span>)</span>
-<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>    matplotlib.image.imsave(path, rgba)</span>
-<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>bounds <span class="op">=</span> {}</span>
-<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> yr <span class="kw">in</span> (<span class="dv">2005</span>, <span class="dv">2020</span>):</span>
-<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> rasterio.<span class="bu">open</span>(MAP_DIR <span class="op">/</span> <span class="ss">f"PfPR_2-10_Africa_</span><span class="sc">{</span>yr<span class="sc">}</span><span class="ss">.tif"</span>) <span class="im">as</span> src:</span>
-<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> src.read(<span class="dv">1</span>).astype(<span class="st">"float32"</span>)</span>
-<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>        a[a <span class="op">&lt;</span> <span class="dv">0</span>] <span class="op">=</span> np.nan</span>
-<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> a[::<span class="dv">2</span>, ::<span class="dv">2</span>] <span class="op">*</span> <span class="dv">100</span>                                       <span class="co"># ~10 km, enough for a web map</span></span>
-<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a>        to_png(a, PUBLIC <span class="op">/</span> <span class="ss">f"raster_malaria_</span><span class="sc">{</span>yr<span class="sc">}</span><span class="ss">.png"</span>, <span class="st">"YlOrRd"</span>, <span class="dv">0</span>, <span class="dv">70</span>)</span>
-<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a>        b <span class="op">=</span> src.bounds</span>
-<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>        bounds[<span class="ss">f"malaria_</span><span class="sc">{</span>yr<span class="sc">}</span><span class="ss">"</span>] <span class="op">=</span> [[b.bottom, b.left], [b.top, b.right]]</span>
-<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a>lon0, lat0, lon1, lat1 <span class="op">=</span> AFRICA_BBOX</span>
-<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a>ann <span class="op">=</span> []</span>
-<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1981</span>, <span class="dv">2011</span>):</span>
-<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a>    da <span class="op">=</span> xr.open_dataset(CHIRPS_MONTHLY <span class="op">/</span> <span class="ss">f"CHIRPS_monthly_</span><span class="sc">{</span>y<span class="sc">}</span><span class="ss">.nc"</span>)[<span class="st">"precip"</span>]</span>
-<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a>    ann.append(da.sel(longitude<span class="op">=</span><span class="bu">slice</span>(lon0, lon1), latitude<span class="op">=</span><span class="bu">slice</span>(lat1, lat0))[:, ::<span class="dv">4</span>, ::<span class="dv">4</span>].<span class="bu">sum</span>(<span class="st">"time"</span>).values)</span>
-<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a>ann <span class="op">=</span> np.mean(ann, axis<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a>ann[ann <span class="op">&lt;=</span> <span class="dv">0</span>] <span class="op">=</span> np.nan</span>
-<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a>to_png(ann, PUBLIC <span class="op">/</span> <span class="st">"raster_rain_annual.png"</span>, <span class="st">"YlGnBu"</span>, <span class="dv">0</span>, <span class="dv">2500</span>)</span>
-<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a>bounds[<span class="st">"rain_annual"</span>] <span class="op">=</span> [[lat0, lon0], [lat1, lon1]]</span>
-<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a>json.dump(bounds, <span class="bu">open</span>(PUBLIC <span class="op">/</span> <span class="st">"raster_bounds.json"</span>, <span class="st">"w"</span>))</span>
-<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- headline numbers ------------------------------------------------------------</span></span>
-<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a>flow <span class="op">=</span> pd.read_csv(PRIVATE <span class="op">/</span> <span class="st">"sample_flow.csv"</span>)</span>
-<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> {<span class="st">"children"</span>: <span class="bu">int</span>(allc.n_children.<span class="bu">sum</span>()), <span class="st">"clusters"</span>: <span class="bu">len</span>(allc),</span>
-<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a>           <span class="st">"countries"</span>: <span class="bu">int</span>(allc.country.nunique()), <span class="st">"surveys"</span>: <span class="bu">int</span>(allc[<span class="st">"sample"</span>].nunique()),</span>
-<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a>           <span class="st">"year_min"</span>: <span class="bu">int</span>(allc.int_year.<span class="bu">min</span>()), <span class="st">"year_max"</span>: <span class="bu">int</span>(allc.int_year.<span class="bu">max</span>()),</span>
-<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a>           <span class="st">"anemia_pct"</span>: <span class="bu">round</span>(<span class="bu">float</span>(allc.anemia_pct.mean()), <span class="dv">1</span>),</span>
-<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a>           <span class="st">"hex_shown"</span>: <span class="bu">len</span>(hx), <span class="st">"regions_shown"</span>: <span class="bu">int</span>(rg.shape[<span class="dv">0</span>]),</span>
-<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a>           <span class="st">"sample_flow"</span>: flow.to_dict(orient<span class="op">=</span><span class="st">"records"</span>)}</span>
-<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a>json.dump(summary, <span class="bu">open</span>(PUBLIC <span class="op">/</span> <span class="st">"sample_summary.json"</span>, <span class="st">"w"</span>), indent<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(json.dumps({k: v <span class="cf">for</span> k, v <span class="kw">in</span> summary.items() <span class="cf">if</span> k <span class="op">!=</span> <span class="st">"sample_flow"</span>}))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
-<p><strong>Visualization tools:</strong> <code>folium</code> for the Leaflet maps (layer control, a custom measure picker, synced dual maps, raster image overlays) and <code>Altair</code> for the linked charts (brushing, click-to-filter, legend selection, sliders, drop-downs). The site is built with Quarto and hosted on GitHub Pages.</p>
+<p>📓 <strong><a href="./analysis/06_public_outputs.html">Notebook 6 · Privacy-safe exports</a></strong> shows the full code and outputs.</p>
+<p><strong>Visualization tools:</strong> a hand-built <strong><a href="website/index.html">story website</a></strong> (HTML, CSS and JavaScript with Leaflet, reading the exported files, as in the Week 12 lab), plus <code>folium</code> for the Leaflet maps (layer control, a custom measure picker, synced dual maps, raster image overlays) and <code>Altair</code> for the linked charts (brushing, click-to-filter, legend selection, sliders, drop-downs). The site is built with Quarto and hosted on GitHub Pages.</p>
 </section>
 <section id="reproducing-this" class="level2">
 <h2 class="anchored" data-anchor-id="reproducing-this">Reproducing this</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> venv .venv <span class="kw">&amp;&amp;</span> <span class="ex">.venv/Scripts/activate</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> analysis</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> 01_build_clusters.py      <span class="co"># needs your own DHS extract (see README)</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> 02_raster_features.py     <span class="co"># needs MAP + CHIRPS rasters</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> 03_download_boundaries.py</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> 04_profiles_hotspots.py</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> 05_predict_anemia.py</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> 06_public_outputs.py</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> .. <span class="kw">&amp;&amp;</span> <span class="ex">quarto</span> render</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> venv .venv <span class="kw">&amp;&amp;</span> <span class="ex">.venv/Scripts/activate</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># run the notebooks in analysis/ in order (01 ... 06) in Jupyter Lab;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 01 needs your own DHS extract and 02 the MAP + CHIRPS rasters (see README)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> website/sync_assets.py    <span class="co"># copy the public exports into the story website</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render                    <span class="co"># notebooks are rendered with their saved outputs</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="limitations" class="level2">
 <h2 class="anchored" data-anchor-id="limitations">Limitations</h2>

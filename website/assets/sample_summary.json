@@ -1,0 +1,49 @@
+{
+  "children": 236822,
+  "clusters": 22097,
+  "countries": 28,
+  "surveys": 68,
+  "year_min": 2000,
+  "year_max": 2021,
+  "anemia_pct": 63.5,
+  "hex_shown": 2037,
+  "regions_shown": 325,
+  "sample_flow": [
+    {
+      "step": "All child records",
+      "remaining": 3015819
+    },
+    {
+      "step": "Sub-Saharan Africa",
+      "remaining": 1475438
+    },
+    {
+      "step": "Child alive",
+      "remaining": 1363997
+    },
+    {
+      "step": "Aged 6-59 months",
+      "remaining": 751676
+    },
+    {
+      "step": "Tested for anemia",
+      "remaining": 319126
+    },
+    {
+      "step": "Cluster has GPS coordinates",
+      "remaining": 284974
+    },
+    {
+      "step": "Cluster open defecation share available",
+      "remaining": 258530
+    },
+    {
+      "step": "Urban/rural known",
+      "remaining": 258530
+    },
+    {
+      "step": "Children in clusters with >= 5 tested children",
+      "remaining": 236822
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+hotspot,n_clusters,countries,anemia_pct,od_pct,pfpr
+1,1177,"Benin, Burkina Faso, Ghana, Mali, Nigeria, Togo",85.9,87.7,57.4
+2,168,"Guinea, Liberia, Sierra Leone",81.2,74.4,46.3
+3,95,"Burkina Faso, Mali",91.1,74.2,62.6
+4,49,"Benin, Niger, Nigeria",82.4,82.5,44.1
+5,36,Guinea,78.8,73.0,41.8
+6,32,"Burkina Faso, Mali",95.7,71.9,68.5
+7,21,Liberia,68.9,81.4,54.4

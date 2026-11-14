@@ -75,10 +75,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
-
-
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
-
 
 
 </head>
@@ -120,6 +117,41 @@ ul.task-list li input[type="checkbox"] {
     <a class="nav-link" href="./model.html"> 
 <span class="menu-text">Predicting anemia</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./website/index.html"> 
+<span class="menu-text">Story website</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-notebooks" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Notebooks</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-notebooks">    
+        <li>
+    <a class="dropdown-item" href="./analysis/01_build_clusters.html">
+ <span class="dropdown-text">1 · Build the cluster table</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./analysis/02_raster_features.html">
+ <span class="dropdown-text">2 · Raster analysis (malaria, rainfall)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./analysis/03_download_boundaries.html">
+ <span class="dropdown-text">3 · Region boundaries (API)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./analysis/04_profiles_hotspots.html">
+ <span class="dropdown-text">4 · k-means profiles &amp; DBSCAN hotspots</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./analysis/05_predict_anemia.html">
+ <span class="dropdown-text">5 · Predicting anemia (ML)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./analysis/06_public_outputs.html">
+ <span class="dropdown-text">6 · Privacy-safe exports</span></a>
+  </li>  
+    </ul>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="./methods.html"> 
 <span class="menu-text">Data &amp; methods</span></a>
@@ -163,7 +195,7 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div id="ddbb89f2" class="cell" data-execution_count="1">
+<div id="52fc6241" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display" data-execution_count="1">
 
 <div class="stat-row">
@@ -174,10 +206,20 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
+<div class="callout callout-style-simple callout-tip">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Start here →</strong> the <strong><a href="website/index.html">interactive story website</a></strong>: an atlas you can recolour by anemia, open defecation, malaria, or rainfall, filter by profile, brush with a linked chart, and explore DBSCAN hotspots. The full analysis lives in the <strong>Notebooks</strong> menu.</p>
+</div>
+</div>
+</div>
 <p><strong>Anemia</strong> affects most young children in sub-Saharan Africa, and it slows growth and learning. Two well-known causes are <strong>malaria</strong>, which destroys red blood cells, and poor <strong>sanitation</strong>: when households have no toilet, worm infections and gut inflammation follow. This project asks where these problems <strong>pile up in the same places</strong>, whether places fall into a few recognisable <strong>profiles</strong>, and how well open defecation, malaria, rainfall, and household conditions can <strong>predict</strong> anemia.</p>
 <section id="three-things-this-project-found" class="level2">
 <h2 class="anchored" data-anchor-id="three-things-this-project-found">Three things this project found</h2>
-<div id="cc2e6da2" class="cell" data-execution_count="2">
+<div id="615f913c" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display" data-execution_count="2">
 
 <div class="finding"><b>1. One in ten clusters has all three problems at once.</b> In the "all three high" profile,
@@ -194,27 +236,27 @@ Anemia in nearby clusters and malaria are the strongest predictors. Open defecat
 <section id="the-all-three-high-belt-at-a-glance" class="level2">
 <h2 class="anchored" data-anchor-id="the-all-three-high-belt-at-a-glance">The “all three high” belt at a glance</h2>
 <p>Each hexagon is coloured by the <strong>share of its survey clusters in the “all three high” profile</strong>. Hover for details.</p>
-<div id="17f676ef" class="cell" data-execution_count="3">
+<div id="272f3716" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-display" data-execution_count="3">
 
 <style>
-  #altair-viz-39191ccf981d429498cd332bdd4e0b56.vega-embed {
+  #altair-viz-a9deec18512248d686423e62f8aa20b6.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-39191ccf981d429498cd332bdd4e0b56.vega-embed details,
-  #altair-viz-39191ccf981d429498cd332bdd4e0b56.vega-embed details summary {
+  #altair-viz-a9deec18512248d686423e62f8aa20b6.vega-embed details,
+  #altair-viz-a9deec18512248d686423e62f8aa20b6.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-39191ccf981d429498cd332bdd4e0b56"></div>
+<div id="altair-viz-a9deec18512248d686423e62f8aa20b6"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-39191ccf981d429498cd332bdd4e0b56") {
-      outputDiv = document.getElementById("altair-viz-39191ccf981d429498cd332bdd4e0b56");
+    if (outputDiv.id !== "altair-viz-a9deec18512248d686423e62f8aa20b6") {
+      outputDiv = document.getElementById("altair-viz-a9deec18512248d686423e62f8aa20b6");
     }
 
     const paths = {
@@ -266,7 +308,7 @@ Anemia in nearby clusters and malaria are the strongest predictors. Open defecat
 </script>
 </div>
 </div>
-<p><strong>Explore it yourself:</strong> the <a href="./explore.html">Map explorer</a> toggles every measure and the open raster surfaces. <a href="./overlap.html">Where they overlap</a> has linked charts you can brush and filter. <a href="./profiles.html">Profiles &amp; hotspots</a> explains the k-means groups and DBSCAN hotspots. <a href="./model.html">Predicting anemia</a> shows where the model gets it wrong.</p>
+<p><strong>Explore it yourself:</strong> the <a href="website/index.html">Story website</a> is the main interactive atlas. The <a href="./explore.html">Map explorer</a> toggles every measure and the open raster surfaces. <a href="./overlap.html">Where they overlap</a> has linked charts you can brush and filter. <a href="./profiles.html">Profiles &amp; hotspots</a> explains the k-means groups and DBSCAN hotspots. <a href="./model.html">Predicting anemia</a> shows where the model gets it wrong.</p>
 
 
 </section>

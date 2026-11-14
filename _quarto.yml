@@ -9,6 +9,14 @@ project:
     - model.qmd
     - methods.qmd
     - report.qmd
+    - analysis/01_build_clusters.ipynb
+    - analysis/02_raster_features.ipynb
+    - analysis/03_download_boundaries.ipynb
+    - analysis/04_profiles_hotspots.ipynb
+    - analysis/05_predict_anemia.ipynb
+    - analysis/06_public_outputs.ipynb
+  resources:
+    - website/**
 
 execute:
   echo: false
@@ -30,6 +38,22 @@ website:
         text: Profiles & hotspots
       - href: model.qmd
         text: Predicting anemia
+      - href: website/index.html
+        text: Story website
+      - text: Notebooks
+        menu:
+          - href: analysis/01_build_clusters.ipynb
+            text: "1 · Build the cluster table"
+          - href: analysis/02_raster_features.ipynb
+            text: "2 · Raster analysis (malaria, rainfall)"
+          - href: analysis/03_download_boundaries.ipynb
+            text: "3 · Region boundaries (API)"
+          - href: analysis/04_profiles_hotspots.ipynb
+            text: "4 · k-means profiles & DBSCAN hotspots"
+          - href: analysis/05_predict_anemia.ipynb
+            text: "5 · Predicting anemia (ML)"
+          - href: analysis/06_public_outputs.ipynb
+            text: "6 · Privacy-safe exports"
       - href: methods.qmd
         text: Data & methods
       - href: report.qmd

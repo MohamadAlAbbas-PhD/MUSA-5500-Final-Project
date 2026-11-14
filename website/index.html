@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Malaria, open defecation and child anemia: an interactive atlas</title>
+<link rel="stylesheet" href="vendor/leaflet.css">
+<link rel="stylesheet" href="styles.css">
+<script src="vendor/leaflet.js" defer></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">DHS SURVEYS · MALARIA ATLAS PROJECT · CHIRPS RAINFALL</p>
+    <h1>Where malaria, open defecation and child anemia overlap</h1>
+    <p class="intro">An interactive atlas of 28 sub-Saharan African countries. Pick a measure, click a place, and drag
+      over the chart to find communities where all three problems pile up.</p>
+    <div class="stats" id="stats" aria-live="polite"></div>
+    <nav class="jump"><a href="#atlas">Open the atlas ↓</a><a href="#profiles">Profiles</a><a href="#hotspots">Hotspots</a><a href="#about">About the data</a><a href="../index.html">← Full project site</a></nav>
+  </div>
+</header>
+
+<main>
+<section id="atlas" class="wrap">
+  <h2>1 · The atlas</h2>
+  <p class="lead">Each hexagon combines 3 or more DHS survey clusters (villages or neighbourhoods). Survey locations are never shown, to protect respondents' privacy.</p>
+
+  <div class="atlas">
+    <aside class="panel" aria-label="Map controls">
+      <fieldset>
+        <legend>Colour hexagons by</legend>
+        <div class="measures" id="measures" role="radiogroup"></div>
+      </fieldset>
+
+      <label class="block">Zoom to country
+        <select id="country"><option value="">All 28 countries</option></select>
+      </label>
+
+      <fieldset>
+        <legend>Show only profile</legend>
+        <div id="profileChips" class="chips"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Background layers</legend>
+        <label><input type="checkbox" id="lyrMalaria"> Malaria surface 2020 (MAP)</label>
+        <label><input type="checkbox" id="lyrMalaria05"> Malaria surface 2005 (MAP)</label>
+        <label><input type="checkbox" id="lyrRain"> Typical annual rainfall (CHIRPS)</label>
+        <label><input type="checkbox" id="lyrRegions"> Region borders</label>
+        <label class="block">Hexagon opacity <input type="range" id="opacity" min="0" max="1" step="0.05" value="0.8"></label>
+      </fieldset>
+      <div id="legend" class="legend"></div>
+    </aside>
+
+    <div class="mapwrap">
+      <div id="map" role="region" aria-label="Interactive map of hexagons"></div>
+      <div id="info" class="info" aria-live="polite">
+        <p class="muted">Click a hexagon to see its numbers.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>Brush to find places on the map</h3>
+  <p class="muted">Each dot is a hexagon. <b>Drag a box</b> over the chart and the map shows only those hexagons. Click the chart once to clear. The axes can be changed.</p>
+  <div class="scatterbar">
+    <label>X axis <select id="xVar"></select></label>
+    <label>Y axis <select id="yVar"></select></label>
+    <span id="selCount" class="pill"></span>
+    <button id="clearBrush" type="button">Clear selection</button>
+  </div>
+  <div id="scatter" class="scatter" aria-label="Scatterplot of hexagons"></div>
+</section>
+
+<section id="profiles" class="wrap">
+  <h2>2 · Five kinds of places (k-means profiles)</h2>
+  <p class="lead">k-means grouped all 22,097 clusters by their anemia, open defecation and malaria levels. <b>Click a card</b> to show that profile on the atlas above.</p>
+  <div id="profileCards" class="cards"></div>
+  <h3>Profile mix by country</h3>
+  <p class="muted">Countries are sorted by their share of "all three high" clusters. Hover a bar segment for its value.</p>
+  <div id="countryBars" class="countrybars"></div>
+</section>
+
+<section id="hotspots" class="wrap">
+  <h2>3 · Hotspots (DBSCAN)</h2>
+  <p class="lead">DBSCAN looks for places where "all three high" clusters crowd together. Move the slider to change how close clusters must be. A larger radius gives fewer, bigger hotspots.</p>
+  <div class="hotbar">
+    <label>Search radius: <b id="epsLabel">50 km</b>
+      <input type="range" id="eps" min="25" max="100" step="25" value="50"></label>
+    <span id="epsStats" class="pill"></span>
+    <button id="showHot" type="button">Show hotspots on the atlas ↑</button>
+  </div>
+  <table class="tbl" id="hotTable"></table>
+</section>
+
+<section id="about" class="wrap about">
+  <h2>About the data</h2>
+  <ul>
+    <li><b>DHS surveys</b> (via IPUMS-DHS), 2000–2021: children aged 6–59 months tested for anemia (hemoglobin below 11 g/dL), and the share of households in each survey cluster with no toilet.</li>
+    <li><b>Malaria Atlas Project</b>: <i>P. falciparum</i> prevalence in children aged 2–10, a 5 km raster for each survey year, averaged in a 2 km (urban) or 5 km (rural) buffer around each cluster.</li>
+    <li><b>CHIRPS</b> rainfall: the 3 months before each survey compared with 1981–2010 (a z-score), plus typical annual rainfall.</li>
+    <li><b>geoBoundaries</b> region borders.</li>
+  </ul>
+  <p class="note"><b>Privacy.</b> DHS does not allow publishing survey locations. This site shows only hexagons with 3 or more clusters and the open rasters. The analysis notebooks run offline on the author's computer.</p>
+  <p class="muted">This is a static website: HTML, CSS and JavaScript reading exported files in <code>assets/</code>. No Python runs in your browser. <a href="assets/hexes.geojson" download>Download the hexagon data (GeoJSON)</a>.</p>
+  <p id="error" role="alert" hidden></p>
+</section>
+</main>
+<footer class="wrap">Mohamad AlAbbas · MUSA 5500 Geospatial Data Science in Python · University of Pennsylvania · Fall 2026</footer>
+</body>
+</html>

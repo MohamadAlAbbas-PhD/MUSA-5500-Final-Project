@@ -1,0 +1,6 @@
+execute:
+  echo: true
+format:
+  html:
+    code-fold: false
+    code-tools: true

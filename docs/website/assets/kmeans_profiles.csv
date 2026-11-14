@@ -1,0 +1,6 @@
+profile,profile_name,n_clusters,n_children,anemia_pct,od_pct,pfpr,rain_3mo_z,wealth,mom_secondary_pct,urban_pct,share_pct
+1,All three high,2285,23879,85.34,82.59,53.51,0.32,2.12,5.9,9.93,10.34
+2,High anemia + malaria,4547,43001,77.41,10.5,46.46,0.01,2.76,16.65,22.85,20.58
+3,High open defecation,3238,39620,61.46,79.87,11.51,0.03,2.01,14.43,7.78,14.65
+4,High anemia,6299,74697,73.59,8.42,10.51,-0.02,3.17,26.46,41.34,28.51
+5,All three low,5728,55625,33.64,7.19,10.48,-0.05,3.31,30.21,37.8,25.92

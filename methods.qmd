@@ -8,11 +8,11 @@ import pandas as pd
 from pathlib import Path
 from IPython.display import HTML
 from _common import summary
-
-def show_code(path, title):
-    code = Path(path).read_text(encoding="utf-8")
-    print(f"::: {{.callout-note collapse=true}}\n## Show the code: `{path}` ({title})\n\n```python\n{code}\n```\n:::\n")
 ```
+
+::: {.howto}
+The analysis is in six **Jupyter notebooks** (menu **Notebooks** above), run on my computer and published with their saved outputs. The interactive results are on the **[Story website](website/index.html)** and the analysis pages.
+:::
 
 ## The pipeline at a glance
 
@@ -61,10 +61,7 @@ A DHS **cluster** is a village or urban neighbourhood where about 25–30 househ
 - **Wealth**: the average household wealth quintile (1 = poorest fifth of the country, 5 = richest)
 - **Mothers with secondary school (%)**, **urban/rural**, and the **interview month**
 
-```{python}
-#| output: asis
-show_code("analysis/01_build_clusters.py", "pandas")
-```
+📓 **[Notebook 1 · Build the cluster table](analysis/01_build_clusters.ipynb)** shows the full code and outputs.
 
 ## Step 2 · Raster analysis: malaria and rainfall around each cluster
 
@@ -76,21 +73,16 @@ DHS moves every cluster's GPS point by up to 2 km (urban) or 5 km (rural) to pro
 
 As a check, the rainfall anomalies correlate at **0.78** with the ones computed independently in R from the daily CHIRPS v3 data in my other project. The two use different CHIRPS versions and different window definitions, so they should not match exactly.
 
-```{python}
-#| output: asis
-show_code("analysis/02_raster_features.py", "geopandas, rasterio, rasterstats, xarray")
-show_code("analysis/03_download_boundaries.py", "geoBoundaries API")
-```
+📓 **[Notebook 2 · Raster analysis](analysis/02_raster_features.ipynb)** shows the full code and outputs.
+
+📓 **[Notebook 3 · Region boundaries](analysis/03_download_boundaries.ipynb)** shows the full code and outputs.
 
 ## Step 3 · Clustering: k-means profiles and DBSCAN hotspots
 
 - **k-means** (`scikit-learn`) on the three *standardized* measures. Choosing k: the elbow plot and the silhouette score both point to **k = 5**.
 - **DBSCAN** on the latitude/longitude of the "all three high" clusters, with **haversine** (great-circle) distance. Settings: radius 50 km, at least 15 clusters. A sensitivity check covers radii of 25–100 km.
 
-```{python}
-#| output: asis
-show_code("analysis/04_profiles_hotspots.py", "scikit-learn KMeans, DBSCAN")
-```
+📓 **[Notebook 4 · Profiles & hotspots](analysis/04_profiles_hotspots.ipynb)** shows the full code and outputs.
 
 ## Step 4 · Machine learning: predicting anemia
 
@@ -99,10 +91,7 @@ show_code("analysis/04_profiles_hotspots.py", "scikit-learn KMeans, DBSCAN")
 - **Spatial lag:** the average anemia of the 10 nearest *training* clusters, found with a `BallTree` and haversine distance. Test clusters only "see" training neighbours, so no answers leak in.
 - **Permutation importance** shows which features matter. **Out-of-fold predictions** give every cluster a prediction from a model that never saw it, which feeds the error map.
 
-```{python}
-#| output: asis
-show_code("analysis/05_predict_anemia.py", "scikit-learn")
-```
+📓 **[Notebook 5 · Predicting anemia](analysis/05_predict_anemia.ipynb)** shows the full code and outputs.
 
 ## Step 5 · Privacy-safe aggregation and the website
 
@@ -114,26 +103,19 @@ show_code("analysis/05_predict_anemia.py", "scikit-learn")
 - **Malaria and rainfall rasters** are open data and are shown in full.
 :::
 
-```{python}
-#| output: asis
-show_code("analysis/06_public_outputs.py", "h3, geopandas")
-```
+📓 **[Notebook 6 · Privacy-safe exports](analysis/06_public_outputs.ipynb)** shows the full code and outputs.
 
-**Visualization tools:** `folium` for the Leaflet maps (layer control, a custom measure picker, synced dual maps, raster image overlays) and `Altair` for the linked charts (brushing, click-to-filter, legend selection, sliders, drop-downs). The site is built with Quarto and hosted on GitHub Pages.
+**Visualization tools:** a hand-built **[story website](website/index.html)** (HTML, CSS and JavaScript with Leaflet, reading the exported files, as in the Week 12 lab), plus `folium` for the Leaflet maps (layer control, a custom measure picker, synced dual maps, raster image overlays) and `Altair` for the linked charts (brushing, click-to-filter, legend selection, sliders, drop-downs). The site is built with Quarto and hosted on GitHub Pages.
 
 ## Reproducing this
 
 ```bash
 python -m venv .venv && .venv/Scripts/activate
 pip install -r requirements.txt
-cd analysis
-python 01_build_clusters.py      # needs your own DHS extract (see README)
-python 02_raster_features.py     # needs MAP + CHIRPS rasters
-python 03_download_boundaries.py
-python 04_profiles_hotspots.py
-python 05_predict_anemia.py
-python 06_public_outputs.py
-cd .. && quarto render
+# run the notebooks in analysis/ in order (01 ... 06) in Jupyter Lab;
+# 01 needs your own DHS extract and 02 the MAP + CHIRPS rasters (see README)
+python website/sync_assets.py    # copy the public exports into the story website
+quarto render                    # notebooks are rendered with their saved outputs
 ```
 
 ## Limitations

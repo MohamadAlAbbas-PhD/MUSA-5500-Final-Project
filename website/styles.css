@@ -1,0 +1,91 @@
+:root {
+  --ink: #222; --muted: #666; --brand: #7b2d26; --bg: #fbf9f7; --card: #fff; --line: #e6e1dc;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font: 16px/1.5 "Segoe UI", system-ui, -apple-system, sans-serif; color: var(--ink); background: var(--bg); }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+a { color: var(--brand); }
+h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.15; margin: .3rem 0 .6rem; }
+h2 { font-size: 1.6rem; margin: 2.6rem 0 .3rem; }
+h3 { margin: 1.8rem 0 .2rem; }
+.lead { font-size: 1.05rem; max-width: 820px; }
+.muted { color: var(--muted); font-size: .92rem; }
+.eyebrow { letter-spacing: .12em; font-size: .75rem; font-weight: 700; opacity: .8; margin: 0; }
+
+.hero { background: linear-gradient(135deg, #5b1f1a, #8e3a2a 60%, #b5652d); color: #fff; padding: 46px 0 30px; }
+.hero .intro { max-width: 760px; font-size: 1.1rem; opacity: .95; }
+.stats { display: flex; flex-wrap: wrap; gap: 12px; margin: 18px 0; }
+.stat { background: rgba(255,255,255,.13); border-radius: 10px; padding: 10px 14px; min-width: 150px; }
+.stat b { display: block; font-size: 1.6rem; }
+.stat span { font-size: .82rem; opacity: .9; }
+.jump { display: flex; flex-wrap: wrap; gap: 8px; }
+.jump a { color: #fff; background: rgba(0,0,0,.22); padding: 6px 12px; border-radius: 20px; text-decoration: none; font-size: .9rem; }
+.jump a:hover, .jump a:focus { background: rgba(0,0,0,.4); }
+
+.atlas { display: grid; grid-template-columns: 270px 1fr; gap: 14px; margin-top: 12px; }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: .9rem; align-self: start; }
+.panel fieldset { border: 0; padding: 0; margin: 0 0 12px; }
+.panel legend { font-weight: 700; margin-bottom: 4px; }
+.panel label { display: block; margin: 2px 0; cursor: pointer; }
+.panel .block { margin: 8px 0 12px; font-weight: 700; }
+.panel select, .panel input[type=range] { width: 100%; margin-top: 4px; }
+.measures button { display: block; width: 100%; text-align: left; border: 1px solid var(--line); background: #fff;
+  border-radius: 8px; padding: 6px 9px; margin: 3px 0; cursor: pointer; font: inherit; }
+.measures button[aria-checked=true] { border-color: var(--brand); background: #f6ece9; font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.chip { border: 2px solid var(--c); background: #fff; border-radius: 14px; padding: 2px 9px; font-size: .8rem; cursor: pointer; }
+.chip[aria-pressed=true] { background: var(--c); color: #fff; }
+.legend { border-top: 1px solid var(--line); padding-top: 8px; font-size: .82rem; }
+.legend .ramp { height: 10px; border-radius: 3px; margin: 4px 0 2px; }
+.legend .ends { display: flex; justify-content: space-between; }
+.legend .sw { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+
+.mapwrap { position: relative; align-self: start; }
+#map { height: 640px; border-radius: 12px; border: 1px solid var(--line); background: #dfe7ec; }
+.info { position: absolute; right: 12px; bottom: 12px; z-index: 500; width: 280px; background: rgba(255,255,255,.96);
+  border-radius: 10px; padding: 10px 12px; box-shadow: 0 2px 10px rgba(0,0,0,.18); font-size: .86rem; }
+.info h4 { margin: 0 0 4px; }
+.info .row { display: grid; grid-template-columns: 105px 1fr 42px; align-items: center; gap: 6px; margin: 3px 0; }
+.info .track { height: 8px; background: #eee; border-radius: 4px; position: relative; }
+.info .track span { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; }
+.info .track i { position: absolute; top: -3px; bottom: -3px; width: 2px; background: #222; }
+
+.scatterbar, .hotbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 8px 0; }
+.scatterbar select { margin-left: 4px; }
+.pill { background: #f1e6e3; color: var(--brand); border-radius: 14px; padding: 3px 10px; font-size: .85rem; font-weight: 700; }
+button { font: inherit; }
+#clearBrush, #showHot { border: 1px solid var(--brand); color: var(--brand); background: #fff; border-radius: 8px; padding: 4px 12px; cursor: pointer; }
+.scatter { background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+.scatter svg { display: block; width: 100%; height: auto; }
+.scatter .dot { stroke: #fff; stroke-width: .4; }
+.scatter .dim { opacity: .12; }
+.axis text { font-size: 11px; fill: #555; }
+.axis line, .axis path { stroke: #bbb; }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 12px; }
+.card { background: var(--card); border: 1px solid var(--line); border-top: 6px solid var(--c); border-radius: 10px; padding: 12px;
+  cursor: pointer; text-align: left; font: inherit; color: inherit; }
+.card:hover, .card:focus { box-shadow: 0 2px 10px rgba(0,0,0,.12); }
+.card[aria-pressed=true] { outline: 3px solid var(--c); }
+.card h4 { margin: 0 0 2px; }
+.card .meta { color: var(--muted); font-size: .82rem; }
+.card .b { height: 7px; background: #eee; border-radius: 4px; margin: 2px 0 6px; }
+.card .b span { display: block; height: 100%; border-radius: 4px; }
+.countrybars { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+.cbrow { display: grid; grid-template-columns: 120px 1fr 50px; align-items: center; gap: 8px; font-size: .85rem; margin: 3px 0; }
+.cbrow .stack { display: flex; height: 16px; border-radius: 3px; overflow: hidden; }
+.cbrow .stack span { height: 100%; }
+.tbl { border-collapse: collapse; width: 100%; margin-top: 10px; background: var(--card); font-size: .9rem; }
+.tbl th, .tbl td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; }
+.tbl th { background: #f4efeb; }
+.about ul { max-width: 900px; }
+.note { background: #fff; border: 1px dashed #bbb; border-radius: 8px; padding: 8px 12px; max-width: 900px; }
+#error { color: #a00; font-weight: 700; }
+footer { color: var(--muted); font-size: .85rem; padding: 30px 20px 40px; }
+
+@media (max-width: 860px) {
+  .atlas { grid-template-columns: 1fr; }
+  #map { height: 460px; }
+  .info { position: static; width: auto; margin-top: 8px; }
+  .cbrow { grid-template-columns: 90px 1fr 40px; }
+}
