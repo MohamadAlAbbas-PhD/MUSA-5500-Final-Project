@@ -3,7 +3,7 @@
 **A geospatial typology of DHS clusters in sub-Saharan Africa**
 MUSA 5500 Geospatial Data Science in Python · Final project · Mohamad AlAbbas · Fall 2026
 
-🌍 **Website:** https://YOUR-GITHUB-USERNAME.github.io/MUSA-5500-Final-Project/ *(update after publishing)*
+🌍 **Website:** https://mohamadalabbas-phd.github.io/MUSA-5500-Final-Project/
 
 ## What's here
 
